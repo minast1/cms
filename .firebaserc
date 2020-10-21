@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "crime-management-system-700a1"
+  },
+  "targets": {
+    "crime-management-system-700a1": {
+      "hosting": {
+        "production": [
+          "crime-management-system"
+        ]
+      }
+    }
   }
 }
