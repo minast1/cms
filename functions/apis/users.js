@@ -41,7 +41,7 @@ exports.signUpUser = (request, response) => {
         addressLine1: request.body.addressLine1,
         addressLine2: request.body.addressLine2,
         city: request.body.city,
-        state: request.body.state,
+        province: request.body.province,
         country: request.body.country,
         password: request.body.password,
         confirmPassword: request.body.confirmPassword
@@ -81,7 +81,7 @@ exports.signUpUser = (request, response) => {
             email: newUser.email,
             country: newUser.country,
             phoneNumber: newUser.phoneNumber,
-            state: newUser.state,
+            province: newUser.province,
             addressLine1: newUser.addressLine1,
             addressLine2: newUser.addressLine2 ? newUser.addressLine2 : null,
             createdAt: new Date().toISOString(),
@@ -103,3 +103,62 @@ exports.signUpUser = (request, response) => {
         }
     });
 };
+
+deleteImage = (imageName) => {
+    const bucket = admin.storage().bucket();
+    const path = `${imageName}`;
+    return bucket.file(path).delete().then(() => {
+        return;
+    }).catch(error => {
+        return;
+    });
+}
+
+exports.uploadProfilePhoto = (request, response) => {
+    const Busboy = require('busboy');
+    const path = require('path');
+    const os = require('os');
+    const fs = require('fs');
+
+    const busboy = new Busboy({headers: request.headers});
+
+    let imageFileName;
+    let imageToBeUploaded = {};
+
+    busboy.on('file', (filedName, file, fileName, encoding, mimeType) => {
+        if (mimeType !== 'image/png' && mimeType !== 'image/jpeg') {
+            return response.status(400).json({ error: 'Wrong file type submitted' });
+        }
+        const imageExtension =fileName.split('.')[fileName.split('.').length-1];
+        imageFileName = `${request.headers.email}.${imageExtension}`;
+        const filePath = path.join(os.tmpdir(), imageFileName);
+        imageToBeUploaded = { filePath, mimeType };
+        file.pipe(fs.createWriteStream(filePath));
+    });
+    deleteImage(imageFileName);
+    busboy.on('finish', () => {
+        admin
+        .storage()
+        .bucket()
+        .upload(imageToBeUploaded.filePath, {
+            resumable: false,
+            metadata: {
+                contentType: imageToBeUploaded.mimeType
+            }
+        })
+        .then(() => {
+            const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${imageFileName}?alt=media`;
+            return db.doc(`users/${request.headers.email}`).update({
+                imageUrl
+            });
+        })
+        .then(() => {
+            return response.json({ message: 'Image uploaded successfully' });
+        })
+        .catch(err => {
+            console.error(err);
+            return response.status(400).json({ error: err.code });
+        });
+    });
+    busboy.end(request.rawBody);
+}

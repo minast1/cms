@@ -7,10 +7,12 @@ app.use(cors());
 
 const {
   loginUser,
-  signUpUser
+  signUpUser,
+  uploadProfilePhoto
 } = require('./apis/users');
 
 app.post('/users/login', loginUser);
 app.post('/users/register', signUpUser);
+app.post('/users/profile-picture', uploadProfilePhoto);
 
 exports.api = functions.https.onRequest(app);

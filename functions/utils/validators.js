@@ -1,5 +1,5 @@
 const isEmpty = (string) => {
-    if (string.trim() === '') {
+    if (string === '') {
         return true;
     } else {
         return false;
@@ -64,7 +64,7 @@ exports.validateSignUpData = (data) => {
         errors.city = "Must not be empty";
     }
 
-    if(isEmpty(data.state)) {
+    if(isEmpty(data.province)) {
         errors.state = "Must not be empty";
     }
 

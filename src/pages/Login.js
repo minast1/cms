@@ -1,4 +1,4 @@
-import { Grid, TextField, Divider, Typography, makeStyles, Container } from '@material-ui/core';
+import { Grid, TextField, Divider, Typography, makeStyles, Container, Button } from '@material-ui/core';
 import React from 'react';
 import MainNav from '../components/MainNav';
 
@@ -31,7 +31,6 @@ const Login = () => {
                         />
                         <br />
                         <br />
-                        <br />
                         <TextField
                             fullWidth
                             label="Password"
@@ -40,9 +39,13 @@ const Login = () => {
                             type="password"
                             variant="outlined"
                         />
+                        <br />
+                        <br />
+                        <Button variant="contained" color="primary">Submit</Button>{'       '}
+                        <Button variant="contained" color="primary">Reset</Button>
                     </Grid>
                     <Grid item lg={6}>
-
+                        
                     </Grid>
                 </Grid>
                 </Container>

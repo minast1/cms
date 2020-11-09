@@ -1,16 +1,6 @@
 import { AppBar, Container, Link, List, ListItem, ListItemText, makeStyles, Toolbar, Typography } from '@material-ui/core';
 import React from 'react';
 
-const navLinks = [
-    {title: 'HOME', path: '/'},
-    {title: 'ABOUT PROJECT', path: '/about-project'},
-    {title: 'ALL CRIMINALS', path: '/all-criminals'},
-    {title: 'LOG COMPLAINT', path: '/log-complaint'},
-    {title: 'REGISTER', path: '/register'},
-    {title: 'LOGIN', path: '/login'},
-    {title: 'SUBMIT FEEDBACK', path: '/feedback'}
-]
-
 const useStyles = makeStyles((theme) => ({
     title: {
         paddingTop: 2,
@@ -41,13 +31,41 @@ const MainNav = () => {
             <Toolbar>
                 <Container>
                     <List component="nav" aria-labelledby="main navigation" className={classes.navDisplayFlex}>
-                        {navLinks.map(({title, path}) => (
-                            <Link href={path} key={title} className={classes.linkText}>
-                                <ListItem button>
-                                    <ListItemText primary={title} />
-                                </ListItem>
-                            </Link>
-                        ))}
+                        <Link href="/" className={classes.linkText}>
+                            <ListItem button>
+                                <ListItemText primary="HOME" />
+                            </ListItem>
+                        </Link>
+                        <Link href="/about-project" className={classes.linkText}>
+                            <ListItem button>
+                                <ListItemText primary="ABOUT PROJECT" />
+                            </ListItem>
+                        </Link>
+                        <Link href="/all-criminals" className={classes.linkText}>
+                            <ListItem button>
+                                <ListItemText primary="ALL CRIMINALS" />
+                            </ListItem>
+                        </Link>
+                        <Link href="/log-complaint" className={classes.linkText}>
+                            <ListItem button>
+                                <ListItemText primary="LOG COMPLAINT" />
+                            </ListItem>
+                        </Link>
+                        <Link href="/register" className={classes.linkText}>
+                            <ListItem button>
+                                <ListItemText primary="REGISTER" />
+                            </ListItem>
+                        </Link>
+                        <Link href="/login" className={classes.linkText}>
+                            <ListItem button>
+                                <ListItemText primary="LOGIN" />
+                            </ListItem>
+                        </Link>
+                        <Link href="/feedback" className={classes.linkText}>
+                            <ListItem button>
+                                <ListItemText primary="SUBMIT FEEDBACK" />
+                            </ListItem>
+                        </Link>
                     </List>
                 </Container>
             </Toolbar>
