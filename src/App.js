@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import AboutProject from './pages/AboutProject';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route exact path="/login" component={Login} />
           <Route exact path="/register" component={Register} />
           <Route exact path="/about-project" component={AboutProject} />
+          <Route exact path="/users/dashboard" component={Dashboard} />
         </Switch>
       </BrowserRouter>
     </div>
