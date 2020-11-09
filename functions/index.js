@@ -8,7 +8,8 @@ app.use(cors());
 const {
   loginUser,
   signUpUser,
-  uploadProfilePhoto
+  uploadProfilePhoto,
+  getUserDetails
 } = require('./apis/users');
 
 const {
@@ -16,6 +17,8 @@ const {
 } = require('./apis/policeStations');
 
 app.get('/police-stations', auth, getAllPoliceStations);
+
+app.get('/user', auth, getUserDetails);
 app.post('/users/login', loginUser);
 app.post('/users/register', signUpUser);
 app.post('/users/profile-picture', uploadProfilePhoto);

@@ -162,3 +162,21 @@ exports.uploadProfilePhoto = (request, response) => {
     });
     busboy.end(request.rawBody);
 }
+
+
+exports.getUserDetails = (request, response) => {
+    let userData = {};
+    db
+    .doc(`/users/${request.headers.email}`)
+    .get()
+    .then(doc => {
+        if (doc.exists) {
+            userData.userCredentials = doc.data();
+            return response.json(userData);
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        return response.status(500).json({ error: err.code });
+    })
+}
