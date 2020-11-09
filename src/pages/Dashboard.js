@@ -125,6 +125,10 @@ const Dashboard = () => {
         history.push(url);
     }
 
+    const getUserDetails = () => {
+        
+    }
+
     useEffect(() => {
         authMiddleWare(history);
     })
