@@ -11,6 +11,11 @@ const {
   uploadProfilePhoto
 } = require('./apis/users');
 
+const {
+  getAllPoliceStations
+} = require('./apis/policeStations');
+
+app.get('/police-stations', auth, getAllPoliceStations);
 app.post('/users/login', loginUser);
 app.post('/users/register', signUpUser);
 app.post('/users/profile-picture', uploadProfilePhoto);
