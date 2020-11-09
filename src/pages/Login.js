@@ -29,19 +29,32 @@ const Login = () => {
             password: login.password
         })
         .then(res => {
-            console.log(res);
             if (res.status == 200) {
-                localStorage.setItem('CMSToken', `Bearer ${res.data.token}`);
+                const token = res.data.token;
+                Axios.get(`${AppConstants.apiEndpoint}/user`, {
+                    headers: {
+                        'Authorization': `Bearer ${res.data.token}`,
+                        'email': res.data.email
+                    }
+                })
+                .then(res => {
+                    localStorage.setItem('CMSData', JSON.stringify({
+                        token: `Bearer ${token}`,
+                        userId: res.data.userCredentials.userId
+                    }));
+                    
                 setLoading(false);
                 history.push('/users/dashboard');
+                })
+                .catch(error => {
+                    console.log(error);
+                })
             } else {
                 setLoading(false);
                 setErrorMessage(res.data.general);
             }
         })
         .catch(error => {
-            console.log(error.data)
-            console.log(error.general);
             setLoading(false);
             setErrorMessage(error);
         })
