@@ -6,6 +6,7 @@ import AboutProject from './pages/AboutProject';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import SubmitComplaint from './partials/SubmitComplaint';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route exact path="/register" component={Register} />
           <Route exact path="/about-project" component={AboutProject} />
           <Route exact path="/users/dashboard" component={Dashboard} />
+          <Route exact path="/log-complaint" component={SubmitComplaint} />
         </Switch>
       </BrowserRouter>
     </div>

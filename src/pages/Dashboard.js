@@ -121,6 +121,10 @@ const Dashboard = () => {
         });
     };
 
+    const goToURL = (url) => {
+        history.push(url);
+    }
+
     useEffect(() => {
         authMiddleWare(history);
     })
@@ -140,7 +144,7 @@ const Dashboard = () => {
                 <Container>
                     <Grid container spacing={3}>
                         <Grid item lg={9}>
-                            <Button color="primary" variant="contained" fullWidth size="small">Log Complaint</Button>
+                            <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/log-complaint')}>Log Complaint</Button>
                             <br />
                             <br />
                             <Button color="primary" variant="contained" fullWidth size="small">My Complaints</Button>
