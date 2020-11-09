@@ -120,14 +120,14 @@ const Register = () => {
             setResponse({
                 ...response, isDialogOpen: true, loading: { boolean: true, text: 'Uploading profile picture.'}
             })
-            localStorage.setItem("AuthToken", res.data.token);
+            localStorage.setItem("AuthToken", `Bearer ${res.data.token}`);
             let form_data = new FormData();
             form_data.append('image', formData.profilePhoto);
             form_data.append('content', formData.content);
             Axios.post(`${AppConstants.apiEndpoint}/users/profile-picture`, form_data, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    'email': formData.email
+                    'Authorization': `Bearer ${res.data.token}`
                 }
             }).then(res => {
                 if (res.status === 200) {

@@ -33,15 +33,11 @@ const Login = () => {
                 const token = res.data.token;
                 Axios.get(`${AppConstants.apiEndpoint}/user`, {
                     headers: {
-                        'Authorization': `Bearer ${res.data.token}`,
-                        'email': res.data.email
+                        'Authorization': `Bearer ${res.data.token}`
                     }
                 })
                 .then(res => {
-                    localStorage.setItem('CMSData', JSON.stringify({
-                        token: `Bearer ${token}`,
-                        userId: res.data.userCredentials.userId
-                    }));
+                    localStorage.setItem('AuthToken', `Bearer ${token}`);
                     
                 setLoading(false);
                 history.push('/users/dashboard');

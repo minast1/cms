@@ -8,6 +8,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import SubmitComplaint from './partials/SubmitComplaint';
 import Complaints from './partials/Complaints';
+import PoliceStations from './partials/PoliceStations';
 
 function App() {
   return (
@@ -20,7 +21,8 @@ function App() {
           <Route exact path="/about-project" component={AboutProject} />
           <Route exact path="/users/dashboard" component={Dashboard} />
           <Route exact path="/log-complaint" component={SubmitComplaint} />
-          <Route exact path="/complaints" component={Complaints} />
+          <Route exact path="/me/complaints" component={Complaints} />
+          <Route exact path="/police-stations" component={PoliceStations} />
         </Switch>
       </BrowserRouter>
     </div>

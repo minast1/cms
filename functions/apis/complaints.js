@@ -1,10 +1,6 @@
 const { db } = require('../utils/admin');
 
 exports.createComplaint = (request, response) => {
-    if (request.body.userId.trim() === '') {
-        return response.status(400).json({ userId: 'Must not be empty' });
-    }
-
     if (request.body.title.trim() === '') {
         return response.status(400).json({ title: 'Must not be empty' });
     }
@@ -23,9 +19,10 @@ exports.createComplaint = (request, response) => {
     const newComplaint= {
         title: request.body.title,
         fullAddress: request.body.fullAddress,
-        userId: request.body.userId,
+        email: request.user.email,
         fullDetails: request.body.fullDetails,
         stationId: request.body.stationId,
+        status: "Pending",
         createdAt: new Date().toISOString()
     };
 
@@ -42,3 +39,29 @@ exports.createComplaint = (request, response) => {
         console.error(error);
     });
 };
+
+exports.getMyComplaints = (request, response) => {
+    db
+    .collection('complaints')
+    .where("email", "==", request.user.email)
+    .get()
+    .then(data => {
+        let complaints = [];
+        data.forEach(item => {
+            complaints.push({
+                id: item.id,
+                title: item.data().title,
+                fullAddress: item.data().fullAddress,
+                fullDetails: item.data().fullDetails,
+                stationId: item.data().stationId,
+                email: item.data().email,
+                status: item.data().status,
+                createdAt: item.data().createdAt
+            });
+        });
+        return response.json(complaints);
+    })
+    .catch(error => {
+        return response.status(500).json({ error: error });
+    })
+}

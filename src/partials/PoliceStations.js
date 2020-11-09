@@ -34,57 +34,36 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const Complaints = () => {
+const PoliceStations = () => {
     const classes = useStyles();
     const history = useHistory();
-    const [complaints, setComplaints] = useState([]);
+    const [stations, setStations] = useState([]);
     const [responseValues, setResponseValues] = useState({
-        success: false,
-        failed: false,
         loading: false
     });
 
-    const handleCloseSnackbar = (event, reason) => {
-        if(reason === 'clickaway'){
-            return
-        }
-        setResponseValues({...responseValues, success: false, failed: false});
-    }
-
-    const getMyComplaints = () => {
+    const getAllPoliceStations = () => {
         const headers = {
             'Authorization': localStorage.getItem('AuthToken')
         }
         setResponseValues({...responseValues, loading: true});
-        Axios.get(`${AppConstants.apiEndpoint}/me/complaints`, {
+        Axios.get(`${AppConstants.apiEndpoint}/police-stations`, {
             headers: headers
         })
         .then(res => {
             const tableData = [];
             if (res.status === 200) {
-                const response = res;
-                Axios.get(`${AppConstants.apiEndpoint}/user`, {
-                    headers: headers
-                })
-                .then(res => {
-                    if (res.status === 200) {
-                        let i = 1;
-                        response.data.forEach(complaint => {
-                            tableData.push({
-                                sn: i++,
-                                title: complaint.title,
-                                loggedBy: res.data.userCredentials.fullName,
-                                email: complaint.email,
-                                status: complaint.status,
-                                phone: res.data.userCredentials.phoneNumber
-                            });
-                        });
-                        setComplaints(tableData);
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                })
+                let i = 1;
+                res.data.forEach(item => {
+                    tableData.push({
+                        sn: i++,
+                        name: item.name,
+                        email: item.email,
+                        city: item.city,
+                        phone: item.phoneNumber
+                    });
+                });
+                setStations(tableData);
             }
             setResponseValues({...responseValues, loading: false});
         })
@@ -96,21 +75,13 @@ const Complaints = () => {
 
     useEffect(() => {
         authMiddleWare(history);
-        getMyComplaints();
+        getAllPoliceStations();
     }, []);
 
     return (
         <div>
-            <React.Fragment>
-                <Snackbar open={responseValues.success} onClose={handleCloseSnackbar} autoHideDuration={6000}>
-                    <Alert severity="success" onClose={handleCloseSnackbar}>Success</Alert>
-                </Snackbar>
-                <Snackbar open={responseValues.failed} onClose={handleCloseSnackbar} autoHideDuration={6000}>
-                    <Alert severity="error" onClose={handleCloseSnackbar}>Failed</Alert>
-                </Snackbar>
-            </React.Fragment>
             <MainNav />
-            <Typography variant="h5" className={classes.subTitle}>SUBMIT COMPLAINT</Typography>
+            <Typography variant="h5" className={classes.subTitle}>All Police Stations</Typography>
             <Divider />
             <br />
             {responseValues.loading ? <LinearProgress /> : <div></div>}
@@ -124,13 +95,8 @@ const Complaints = () => {
                         filtering: false
                     },
                     {
-                        title: 'Title',
-                        field: 'title',
-                        filtering: false
-                    },
-                    {
-                        title: 'Logged By',
-                        field: 'loggedBy',
+                        title: 'Name',
+                        field: 'name',
                         filtering: false
                     },
                     {
@@ -139,13 +105,13 @@ const Complaints = () => {
                         filtering: false
                     },
                     {
-                        title: 'Status',
-                        field: 'status',
+                        title: 'City',
+                        field: 'city',
                         filtering: false
                     },
                     {
-                        title: 'phone',
-                        field: 'Phone',
+                        title: 'Phone',
+                        field: 'phone',
                         filtering: false
                     }
                     ]}
@@ -154,7 +120,7 @@ const Complaints = () => {
                     headerStyle,
                     toolbar: false
                     }}
-                    data={complaints}
+                    data={stations}
                 />
                 </Container>
             </form>
@@ -162,4 +128,4 @@ const Complaints = () => {
     );
 };
 
-export default Complaints;
+export default PoliceStations;

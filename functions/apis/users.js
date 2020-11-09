@@ -24,7 +24,7 @@ exports.loginUser = (request, response) => {
         return data.user.getIdToken();
     })
     .then((token) => {
-        return response.status(200).json({ token: token, email: user.email });
+        return response.status(200).json({ token });
     })
     .catch((error) => {
         console.error(error);
@@ -130,7 +130,7 @@ exports.uploadProfilePhoto = (request, response) => {
             return response.status(400).json({ error: 'Wrong file type submitted' });
         }
         const imageExtension =fileName.split('.')[fileName.split('.').length-1];
-        imageFileName = `${request.headers.email}.${imageExtension}`;
+        imageFileName = `${request.user.email}.${imageExtension}`;
         const filePath = path.join(os.tmpdir(), imageFileName);
         imageToBeUploaded = { filePath, mimeType };
         file.pipe(fs.createWriteStream(filePath));
@@ -148,7 +148,7 @@ exports.uploadProfilePhoto = (request, response) => {
         })
         .then(() => {
             const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${imageFileName}?alt=media`;
-            return db.doc(`users/${request.headers.email}`).update({
+            return db.doc(`users/${request.user.email}`).update({
                 imageUrl
             });
         })
@@ -167,7 +167,7 @@ exports.uploadProfilePhoto = (request, response) => {
 exports.getUserDetails = (request, response) => {
     let userData = {};
     db
-    .doc(`/users/${request.headers.email}`)
+    .doc(`/users/${request.user.email}`)
     .get()
     .then(doc => {
         if (doc.exists) {

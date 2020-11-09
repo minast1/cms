@@ -1,6 +1,5 @@
 export const authMiddleWare = (history) => {
-    const user = JSON.parse(localStorage.getItem('CMSData'));
-    if (user === null) {
+    if (localStorage.getItem('AuthToken') === null) {
         history.push("/login");
     }
 };

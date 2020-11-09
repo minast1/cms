@@ -1,13 +1,10 @@
 import { Grid, TextField, Divider, Typography, makeStyles, Container, Button, LinearProgress, TextareaAutosize, Snackbar } from '@material-ui/core';
-import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import React, { useEffect, useState } from 'react';
 import MainNav from '../components/MainNav';
-import DateMoment from '@date-io/moment';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import { AppConstants } from '../constants/AppConstants';
 import Axios from 'axios';
 import { useHistory } from 'react-router-dom';
-import CustomDialog from '../components/CustomDialog';
 import { authMiddleWare } from '../utils/auth';
 
 const useStyles = makeStyles((theme) => ({
@@ -20,7 +17,6 @@ const useStyles = makeStyles((theme) => ({
 const SubmitComplaint = () => {
     const classes = useStyles();
     const history = useHistory();
-    const [token, setToken] = useState(null);
     const [policeStations, setPoliceStations] = useState([]);
     const [formData, setFormData] = useState({
         title: null,
@@ -50,11 +46,10 @@ const SubmitComplaint = () => {
 			stationId: formData.stationId,
 			fullDetails: formData.fullDetails,
 			fullAddress: formData.fullAddress,
-			userId: formData.userId,
 		};
-        Axios.post(`${AppConstants.apiEndpoint}/complaints`, newComplaint, {
+        Axios.post(`${AppConstants.apiEndpoint}/me/complaints`, newComplaint, {
             headers: {
-                'Authorization': token
+                'Authorization': localStorage.getItem('AuthToken')
             }
         })
         .then(res => {
@@ -74,7 +69,7 @@ const SubmitComplaint = () => {
         setResponseValues({...responseValues, loading: true});
         Axios.get(`${AppConstants.apiEndpoint}/police-stations`, {
             headers: {
-                'Authorization': `${JSON.parse(localStorage.getItem('CMSData')).token}`
+                'Authorization': localStorage.getItem('AuthToken')
             }
         })
         .then(res => {
@@ -95,9 +90,6 @@ const SubmitComplaint = () => {
     }
 
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('CMSData'));
-        setFormData({...formData, userId: user.userId});
-        setToken(user.token);
         authMiddleWare(history);
         getAllPoliceStations();
     }, []);

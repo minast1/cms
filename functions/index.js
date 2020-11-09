@@ -17,7 +17,8 @@ const {
 } = require('./apis/policeStations');
 
 const {
-  createComplaint
+  createComplaint,
+  getMyComplaints
 } = require('./apis/complaints');
 
 app.get('/police-stations', auth, getAllPoliceStations);
@@ -25,8 +26,9 @@ app.get('/police-stations', auth, getAllPoliceStations);
 app.get('/user', auth, getUserDetails);
 app.post('/users/login', loginUser);
 app.post('/users/register', signUpUser);
-app.post('/users/profile-picture', uploadProfilePhoto);
+app.post('/users/profile-picture', auth, uploadProfilePhoto);
 
-app.post('/complaints', auth, createComplaint);
+app.post('/me/complaints', auth, createComplaint);
+app.get('/me/complaints', auth, getMyComplaints);
 
 exports.api = functions.https.onRequest(app);

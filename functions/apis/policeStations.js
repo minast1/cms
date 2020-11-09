@@ -12,8 +12,8 @@ exports.getAllPoliceStations = (request, response) => {
                 name: item.data().name,
                 area: item.data().area,
                 city: item.data().city,
-                email: item.data.email,
-                phoneNumber: item.data.phoneNumber
+                email: item.data().email,
+                phoneNumber: item.data().phoneNumber
             });
         });
         return response.json(policeStations);

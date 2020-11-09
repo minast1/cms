@@ -1,13 +1,11 @@
 import { Grid, Divider, Typography, makeStyles, Container, Button, LinearProgress } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import MainNav from '../components/MainNav';
-import { AppConstants } from '../constants/AppConstants';
-import Axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import CustomDialog from '../components/CustomDialog';
 import { authMiddleWare } from '../utils/auth';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     subTitle: {
         paddingTop: 10,
         marginLeft: 20
@@ -22,22 +20,6 @@ const useStyles = makeStyles((theme) => ({
 const Dashboard = () => {
     const classes = useStyles();
     const history = useHistory();
-    const [formData, setFormData] = useState({
-        fullName: null,
-        email: null,
-        password: null,
-        confirmPassword: null,
-        phoneNumber: null,
-        dateOfBirth: null,
-        addressLine1: null,
-        addressLine2: null,
-        country: null,
-        province: null,
-        city: null,
-        profilePhoto: null,
-        content: null
-    });
-
     const [response, setResponse] = useState({
         citiesDisabled: true,
         loading: {
@@ -49,77 +31,9 @@ const Dashboard = () => {
     });
 
     const handleLogout = () => {
-        localStorage.removeItem('CMSToken');
+        localStorage.removeItem('AuthToken');
         history.push('/login');
     }
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        setResponse({
-            ...response, isDialogOpen: true, loading: { boolean: true, text: 'Saving user information.'}
-        });
-
-        const newUserData = {
-			fullName: formData.fullName,
-			dateOfBirth: formData.dateOfBirth,
-			phoneNumber: formData.phoneNumber,
-			country: formData.country,
-			province: formData.province,
-			email: formData.email,
-			password: formData.password,
-            confirmPassword: formData.confirmPassword,
-            addressLine1: formData.addressLine1,
-            addressLine2: formData.addressLine2,
-            city: formData.city
-		};
-        Axios.post(`${AppConstants.apiEndpoint}/users/register`, newUserData)
-        .then(res => {
-            if (res.status == 201) {
-                setResponse({
-                    ...response, isDialogOpen: true, loading: { boolean: true, text: 'Successfully saved user information.'}
-                });
-            }
-            else{
-                setResponse({
-                    ...response, isDialogOpen: true, loading: { boolean: true, text: 'Failed to save user information.'}
-                });
-            }
-            setResponse({
-                ...response, isDialogOpen: true, loading: { boolean: true, text: 'Uploading profile picture.'}
-            })
-            localStorage.setItem("AuthToken", res.data.token);
-            let form_data = new FormData();
-            form_data.append('image', formData.profilePhoto);
-            form_data.append('content', formData.content);
-            Axios.post(`${AppConstants.apiEndpoint}/users/profile-picture`, form_data, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'email': formData.email
-                }
-            }).then(res => {
-                if (res.status === 200) {
-                    setResponse({
-                        ...response, isDialogOpen: true, loading: { boolean: false, text: 'Successfully uploaded profile picture.'}
-                    })
-                } else {
-                    setResponse({
-                        ...response, isDialogOpen: true, loading: { boolean: true, text: 'Failed to upload profile picture.'}
-                    })
-                }
-            })
-            .catch(error => {
-                console.log(error);
-                setResponse({
-                    ...response, isDialogOpen: true, errors: error, loading: { boolean: false, text: `Error: ${error}`}
-                });
-            })
-        })
-        .catch(err => {
-            console.log(err);
-            setResponse({
-                ...response, isDialogOpen: true, loading: { boolean: false, text: `Error: ${err}`}
-            })
-        });
-    };
 
     const goToURL = (url) => {
         history.push(url);
@@ -147,10 +61,10 @@ const Dashboard = () => {
                             <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/log-complaint')}>Log Complaint</Button>
                             <br />
                             <br />
-                            <Button color="primary" variant="contained" fullWidth size="small">My Complaints</Button>
+                            <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/me/complaints')}>My Complaints</Button>
                             <br />
                             <br />
-                            <Button color="primary" variant="contained" fullWidth size="small">All Police Stations</Button>
+                            <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/police-stations')}>All Police Stations</Button>
                             <br />
                             <br />
                             <Button color="primary" variant="contained" fullWidth size="small">Submit Feedback</Button>
