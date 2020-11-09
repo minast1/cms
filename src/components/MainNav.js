@@ -1,5 +1,6 @@
 import { AppBar, Container, Link, List, ListItem, ListItemText, makeStyles, Toolbar, Typography } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     title: {
@@ -24,11 +25,13 @@ const useStyles = makeStyles((theme) => ({
 
 const MainNav = () => {
     const classes = useStyles();
+    const history = useHistory();
     const [token, setToken] = useState(null);
 
     useEffect(() => {
-        setToken(localStorage.getItem('CMSToken'))
-    });
+        const user = JSON.parse(localStorage.getItem('CMSData'));
+        setToken(user)
+    }, []);
     
     return (
         <AppBar position="static">
@@ -67,9 +70,9 @@ const MainNav = () => {
                                     <ListItemText primary="CHANGE PASSWORD" />
                                 </ListItem>
                             </Link>
-                            <Link href="/logout" className={classes.linkText}>
+                            <Link href="/login" className={classes.linkText}>
                                 <ListItem button>
-                                    <ListItemText primary="LOGOUT" />
+                                    <ListItemText primary="LOGOUT" onClick={() => localStorage.removeItem('CMSData')} />
                                 </ListItem>
                             </Link>
                         </List>

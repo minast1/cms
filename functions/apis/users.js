@@ -24,7 +24,7 @@ exports.loginUser = (request, response) => {
         return data.user.getIdToken();
     })
     .then((token) => {
-        return response.status(200).json({ token });
+        return response.status(200).json({ token: token, email: user.email });
     })
     .catch((error) => {
         console.error(error);
