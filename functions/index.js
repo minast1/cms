@@ -27,6 +27,6 @@ app.post('/users/login', loginUser);
 app.post('/users/register', signUpUser);
 app.post('/users/profile-picture', uploadProfilePhoto);
 
-app.post('/complaints', createComplaint);
+app.post('/complaints', auth, createComplaint);
 
 exports.api = functions.https.onRequest(app);

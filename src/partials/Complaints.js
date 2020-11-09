@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const SubmitComplaint = () => {
+const Complaints = () => {
     const classes = useStyles();
     const history = useHistory();
     const [token, setToken] = useState(null);
@@ -161,4 +161,4 @@ const SubmitComplaint = () => {
     );
 };
 
-export default SubmitComplaint;
+export default Complaints;
