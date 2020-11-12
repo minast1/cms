@@ -85,7 +85,7 @@ const MainNav = () => {
                                     <ListItemText primary="ABOUT PROJECT" />
                                 </ListItem>
                             </Link>
-                            <Link href="/all-criminals" className={classes.linkText}>
+                            <Link href="/criminals" className={classes.linkText}>
                                 <ListItem button>
                                     <ListItemText primary="ALL CRIMINALS" />
                                 </ListItem>

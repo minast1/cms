@@ -50,6 +50,7 @@ const Dashboard = () => {
                 })} title="Processing" content={response.loading.text} />
             </React.Fragment>
             <MainNav />
+            <Container>
             <Typography variant="h5" className={classes.subTitle}>WELCOME TO CRIMINAL RECORD MANAGEMENT SYSTEM</Typography>
             <Divider />
             <br />
@@ -67,13 +68,13 @@ const Dashboard = () => {
                             <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/police-stations')}>All Police Stations</Button>
                             <br />
                             <br />
-                            <Button color="primary" variant="contained" fullWidth size="small">Submit Feedback</Button>
+                            <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/feedback')}>Submit Feedback</Button>
                             <br />
                             <br />
                             <Button color="primary" variant="contained" fullWidth size="small">View Article Book</Button>
                             <br />
                             <br />
-                            <Button color="primary" variant="contained" fullWidth size="small">My Account</Button>
+                            <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/me')}>My Account</Button>
                             <br />
                             <br />
                             <Button color="primary" variant="contained" fullWidth size="small">Change Password</Button>
@@ -89,6 +90,7 @@ const Dashboard = () => {
                     </Grid>
                 </Container>
             </form>
+            </Container>
         </div>
     );
 };

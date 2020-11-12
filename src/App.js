@@ -9,6 +9,9 @@ import Dashboard from './pages/Dashboard';
 import SubmitComplaint from './partials/SubmitComplaint';
 import Complaints from './partials/Complaints';
 import PoliceStations from './partials/PoliceStations';
+import SubmitFeedback from './partials/SubmitFeedback';
+import ProfilePage from './partials/ProfilePage';
+import Criminals from './pages/Criminals';
 
 function App() {
   return (
@@ -22,7 +25,10 @@ function App() {
           <Route exact path="/users/dashboard" component={Dashboard} />
           <Route exact path="/log-complaint" component={SubmitComplaint} />
           <Route exact path="/me/complaints" component={Complaints} />
+          <Route exact path="/me" component={ProfilePage} />
           <Route exact path="/police-stations" component={PoliceStations} />
+          <Route exact path="/feedback" component={SubmitFeedback} />
+          <Route exact path="/criminals" component={Criminals} />
         </Switch>
       </BrowserRouter>
     </div>

@@ -1,18 +1,19 @@
-import { Grid, TextField, Divider, Typography, makeStyles, Container, Button, LinearProgress } from '@material-ui/core';
+import { Grid, TextField, Divider, Typography, makeStyles, Button, LinearProgress, Snackbar } from '@material-ui/core';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MainNav from '../components/MainNav';
-import DateMoment from '@date-io/moment';
-import { Autocomplete } from '@material-ui/lab';
+import { Alert } from '@material-ui/lab';
 import { AppConstants } from '../constants/AppConstants';
 import Axios from 'axios';
-import { useHistory } from 'react-router-dom';
-import CustomDialog from '../components/CustomDialog';
+import DateMoment from '@date-io/moment';
+import { Autocomplete } from '@material-ui/lab';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     subTitle: {
-        paddingTop: 10,
-        marginLeft: 20
+        paddingTop: 10
+    },
+    textField: {
+        width: 325
     }
 }));
 
@@ -46,9 +47,8 @@ const countries = [
     {title: 'Zambia', id: 'ZM'}
 ]
 
-const Register = () => {
+const ProfilePage = () => {
     const classes = useStyles();
-    const history = useHistory();
     const [formData, setFormData] = useState({
         fullName: null,
         email: null,
@@ -64,15 +64,11 @@ const Register = () => {
         profilePhoto: null,
         content: null
     });
-
-    const [response, setResponse] = useState({
-        citiesDisabled: true,
-        loading: {
-            boolean: false,
-            text: ''
-        },
-        errors: null,
-        isDialogOpen: false
+    const [responseValues, setResponseValues] = useState({
+        success: false,
+        failed: false,
+        loading: false,
+        citiesDisabled: true
     });
 
     const citiesDropdown = (provincesId) => {
@@ -85,97 +81,87 @@ const Register = () => {
         return citiesToShow;
     }
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        setResponse({
-            ...response, isDialogOpen: true, loading: { boolean: true, text: 'Saving user information.'}
-        });
+    const handleCloseSnackbar = (event, reason) => {
+        if(reason === 'clickaway'){
+            return
+        }
+        setResponseValues({...responseValues, success: false, failed: false});
+    }
 
-        const newUserData = {
-			fullName: formData.fullName,
-			dateOfBirth: formData.dateOfBirth,
-			phoneNumber: formData.phoneNumber,
-			country: formData.country,
-			province: formData.province,
-			email: formData.email,
-			password: formData.password,
-            confirmPassword: formData.confirmPassword,
-            addressLine1: formData.addressLine1,
-            addressLine2: formData.addressLine2,
-            city: formData.city
+    const handleSubmit = (event) => {
+        setResponseValues({...responseValues, loading: true});
+        event.preventDefault();
+        const feedback = {
+			name: formData.name,
+			message: formData.message,
+			phone: formData.phone,
+            company: formData.company,
+            email: formData.email
 		};
-        Axios.post(`${AppConstants.apiEndpoint}/users/register`, newUserData)
+        Axios.post(`${AppConstants.apiEndpoint}/feedback`, feedback)
         .then(res => {
-            if (res.status == 201) {
-                setResponse({
-                    ...response, isDialogOpen: true, loading: { boolean: true, text: 'Successfully saved user information.'}
-                });
+            if (res.status === 200) {
+                setResponseValues({...responseValues, success: true, loading: false});
+            } else {
+                setResponseValues({...responseValues, failed: true, loading: false});
             }
-            else{
-                setResponse({
-                    ...response, isDialogOpen: true, loading: { boolean: true, text: 'Failed to save user information.'}
-                });
-            }
-            setResponse({
-                ...response, isDialogOpen: true, loading: { boolean: true, text: 'Uploading profile picture.'}
-            })
-            localStorage.setItem("AuthToken", `Bearer ${res.data.token}`);
-            let form_data = new FormData();
-            form_data.append('image', formData.profilePhoto);
-            form_data.append('content', formData.content);
-            Axios.post(`${AppConstants.apiEndpoint}/users/profile-picture`, form_data, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${res.data.token}`
-                }
-            }).then(res => {
-                if (res.status === 200) {
-                    setResponse({
-                        ...response, isDialogOpen: true, loading: { boolean: false, text: 'Successfully uploaded profile picture.'}
-                    })
-                } else {
-                    setResponse({
-                        ...response, isDialogOpen: true, loading: { boolean: true, text: 'Failed to upload profile picture.'}
-                    })
-                }
-            })
-            .catch(error => {
-                console.log(error);
-                setResponse({
-                    ...response, isDialogOpen: true, errors: error, loading: { boolean: false, text: `Error: ${error}`}
-                });
-            })
         })
         .catch(err => {
+            setResponseValues({...responseValues, failed: true, loading: false});
             console.log(err);
-            setResponse({
-                ...response, isDialogOpen: true, loading: { boolean: false, text: `Error: ${err}`}
-            })
         });
     };
 
+    useEffect(() => {
+        Axios.get(`${AppConstants.apiEndpoint}/user`, {
+            headers: {
+                'Authorization': localStorage.getItem('AuthToken')
+            }
+        })
+        .then(res => {
+            console.log(localStorage.getItem('AuthToken'));
+            setFormData({
+                ...formData,
+                fullName: res.data.userCredentials.fullName,
+                phoneNumber: res.data.userCredentials.phoneNumber,
+                email: res.data.userCredentials.email,
+                dateOfBirth: res.data.userCredentials.dateOfBirth,
+                addressLine1: res.data.userCredentials.addressLine1,
+                addressLine2: res.data.userCredentials.addressLine2,
+                profilePhoto: res.data.userCredentials.imageUrl
+            });
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }, [])
     return (
         <div>
             <React.Fragment>
-                <CustomDialog isOpen={response.isDialogOpen} onClose={() => setResponse({
-                    ...response, isDialogOpen: false
-                })} title="Processing" content={response.loading.text} />
+                <Snackbar open={responseValues.success} onClose={handleCloseSnackbar} autoHideDuration={6000}>
+                    <Alert severity="success" onClose={handleCloseSnackbar}>Success</Alert>
+                </Snackbar>
+                <Snackbar open={responseValues.failed} onClose={handleCloseSnackbar} autoHideDuration={6000}>
+                    <Alert severity="error" onClose={handleCloseSnackbar}>Failed</Alert>
+                </Snackbar>
             </React.Fragment>
             <MainNav />
-            <Typography variant="h5" className={classes.subTitle}>REGISTRATION FROM</Typography>
-            <Divider />
-            <br />
-            {response.loading.boolean ? <LinearProgress /> : <div></div>}
-            <form>
-                <Container>
-                    <Grid container spacing={3}>
-                        <Grid item lg={6}>
-                        <TextField
+            <div style={{marginLeft: 20, marginRight: 20}}>
+                <Grid container spacing={3}>
+                    <Grid item lg={7}>
+                        <Typography variant="h5" className={classes.subTitle}>MY ACCOUNT</Typography>
+                        <Divider />
+                        <br />
+                        {responseValues.loading ? <LinearProgress /> : <div></div>}
+                        <form>
+                            <Grid container spacing={3}>
+                                <Grid item sm={12} md={12}>
+                                <TextField
                                 fullWidth
-                                label="Full Name"
                                 name="name"
                                 size="small"
                                 type="text"
+                                value={formData.fullName}
                                 onChange={e => setFormData({...formData, fullName: e.target.value})}
                                 variant="outlined"
                             />
@@ -183,7 +169,7 @@ const Register = () => {
                             <br />
                             <TextField
                                 fullWidth
-                                label="Email"
+                                value={formData.email}
                                 name="email"
                                 size="small"
                                 type="text"
@@ -194,29 +180,7 @@ const Register = () => {
                             <br />
                             <TextField
                                 fullWidth
-                                label="Password"
-                                name="password"
-                                size="small"
-                                type="password"
-                                onChange={e => setFormData({...formData, password: e.target.value})}
-                                variant="outlined"
-                            />
-                            <br />
-                            <br />
-                            <TextField
-                                fullWidth
-                                label="Confirm Password"
-                                name="password2"
-                                size="small"
-                                type="password"
-                                onChange={e => setFormData({...formData, confirmPassword: e.target.value})}
-                                variant="outlined"
-                            />
-                            <br />
-                            <br />
-                            <TextField
-                                fullWidth
-                                label="Mobile"
+                                value={formData.phoneNumber}
                                 name="phone"
                                 size="small"
                                 type="text"
@@ -241,7 +205,7 @@ const Register = () => {
                             <br />
                             <TextField
                                 fullWidth
-                                label="Address Line 1"
+                                value={formData.addressLine1}
                                 name="address1"
                                 size="small"
                                 type="text"
@@ -252,7 +216,7 @@ const Register = () => {
                             <br />
                             <TextField
                                 fullWidth
-                                label="Address Line 2"
+                                value={formData.addressLine2}
                                 name="address2"
                                 size="small"
                                 type="text"
@@ -276,35 +240,43 @@ const Register = () => {
                                 getOptionLabel={option => option.title}
                                 fullWidth
                                 size="small"
-                                onChange={(e, value) => setFormData({...formData, province: value}, setResponse({...response, citiesDisabled: false}))}
+                                onChange={(e, value) => setFormData({...formData, province: value}, setResponseValues({...responseValues, citiesDisabled: false}))}
                                 renderInput={params => <TextField {...params} label="Province" variant="outlined" />}
                             />
                             <br />
                             <br />
                             <Autocomplete
                                 options={formData.province ? citiesDropdown(formData.province.id) : cities}
-                                disabled={response.citiesDisabled}
+                                disabled={responseValues.citiesDisabled}
                                 getOptionLabel={option => option.title}
                                 fullWidth
                                 size="small"
+                                value={formData}
                                 onChange={(e, value) => setFormData({...formData, city: value})}
                                 renderInput={params => <TextField {...params} label="City" variant="outlined" />}
                             />
                             <br />
                             <br />
                             <input type="file" onChange={e => setFormData({...formData, profilePhoto: e.target.files[0]})} />
-                            <br />
-                            <br />
-                            <Button variant="contained" color="primary" disabled={response.loading.boolean} onClick={handleSubmit}>Submit</Button>
-                        </Grid>
-                        <Grid item lg={6}>
-                            
-                        </Grid>
+                                    <br />
+                                    <br />
+                                    <Button variant="contained" color="primary" disabled={responseValues.loading} onClick={handleSubmit}>Submit</Button>{'      '}
+                                    <Button variant="contained" color="primary" disabled={responseValues.loading}>Reset</Button>
+                                </Grid>
+                            </Grid>
+                        </form>
                     </Grid>
-                </Container>
-            </form>
+                    <Grid item sm={12} md={5}>
+                    <Typography variant="h5" className={classes.subTitle}>PROFILE PICTURE</Typography>
+                    <Divider />
+                    <br />
+                    <img src={`${formData.profilePhoto}&token=74ff8789-2653-4e49-bb26-4c56d05ed159`} style={{width: 550, height: 700}}/>
+                    <br />
+                </Grid>
+                </Grid>
+            </div>
         </div>
     );
 };
 
-export default Register;
+export default ProfilePage;

@@ -110,7 +110,7 @@ const Complaints = () => {
                 </Snackbar>
             </React.Fragment>
             <MainNav />
-            <Typography variant="h5" className={classes.subTitle}>SUBMIT COMPLAINT</Typography>
+            <Typography variant="h5" className={classes.subTitle}>MY COMPLAINTS</Typography>
             <Divider />
             <br />
             {responseValues.loading ? <LinearProgress /> : <div></div>}

@@ -9,8 +9,7 @@ import { authMiddleWare } from '../utils/auth';
 
 const useStyles = makeStyles((theme) => ({
     subTitle: {
-        paddingTop: 10,
-        marginLeft: 20
+        paddingTop: 10
     }
 }));
 
@@ -105,12 +104,12 @@ const SubmitComplaint = () => {
                 </Snackbar>
             </React.Fragment>
             <MainNav />
+            <Container>
             <Typography variant="h5" className={classes.subTitle}>SUBMIT COMPLAINT</Typography>
             <Divider />
             <br />
             {responseValues.loading ? <LinearProgress /> : <div></div>}
             <form>
-                <Container>
                     <Grid container spacing={3}>
                         <Grid item lg={6}>
                         <TextField
@@ -147,8 +146,8 @@ const SubmitComplaint = () => {
                             
                         </Grid>
                     </Grid>
-                </Container>
             </form>
+            </Container>
         </div>
     );
 };
