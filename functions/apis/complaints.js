@@ -40,6 +40,48 @@ exports.createComplaint = (request, response) => {
     });
 };
 
+exports.createFeedback = (request, response) => {
+    if (request.body.name.trim() === '') {
+        return response.status(400).json({ name: 'Must not be empty' });
+    }
+
+    if (request.body.company.trim() === '') {
+        return response.status(400).json({ company: 'Must not be empty' });
+    }
+
+    if (request.body.email.trim() === '') {
+        return response.status(400).json({ email: 'Must not be empty' });
+    }
+    if (request.body.phone.trim() === '') {
+        return response.status(400).json({ phone: 'Must not be empty' });
+    }
+    if (request.body.message.trim() === '') {
+        return response.status(400).json({ message: 'Must not be empty' });
+    }
+
+    const feedback= {
+        name: request.body.name,
+        company: request.body.company,
+        email: request.body.email,
+        phone: request.body.phone,
+        message: request.body.message,
+        createdAt: new Date().toISOString()
+    };
+
+    db
+    .collection('feedback')
+    .add(feedback)
+    .then((document) => {
+        const responseFeedback = feedback;
+        responseFeedback.id = document.id;
+        return response.json(responseFeedback);
+    })
+    .catch((error) => {
+        response.status(500).json({ error: 'Something went wrong' });
+        console.error(error);
+    });
+};
+
 exports.getMyComplaints = (request, response) => {
     db
     .collection('complaints')
