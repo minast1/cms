@@ -44,7 +44,8 @@ exports.signUpUser = (request, response) => {
         province: request.body.province,
         country: request.body.country,
         password: request.body.password,
-        confirmPassword: request.body.confirmPassword
+        confirmPassword: request.body.confirmPassword,
+        userType: 'resident'
     };
 
     const { errors, valid } = validateSignUpData(newUser);

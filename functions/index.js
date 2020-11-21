@@ -28,6 +28,21 @@ const {
   getAllCriminals
 } = require('./apis/criminals');
 
+const {
+  addCountry,
+  getCountries
+} = require('./apis/countries');
+
+const {
+  addState,
+  getStates
+} = require('./apis/states');
+
+const {
+  addCity,
+  getCities
+} = require('./apis/cities');
+
 app.get('/police-stations', auth, getAllPoliceStations);
 
 app.get('/user', auth, getUserDetails);
@@ -43,5 +58,14 @@ app.post('/feedback', createFeedback);
 app.post('/criminals', addCriminal);
 app.post('/criminals/images', uploadImage);
 app.get('/criminals', getAllCriminals);
+
+app.post('/countries', auth, addCountry);
+app.get('/countries', auth, getCountries);
+
+app.post('/states', auth, addState);
+app.get('/states', auth, getStates);
+
+app.post('/cities', auth, addCity);
+app.get('/cities', auth, getCities);
 
 exports.api = functions.https.onRequest(app);
