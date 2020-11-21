@@ -4,6 +4,7 @@ import MainNav from '../components/MainNav';
 import { useHistory } from 'react-router-dom';
 import CustomDialog from '../components/CustomDialog';
 import { authMiddleWare } from '../utils/auth';
+import cuffs from '../images/investigation.jpg';
 
 const useStyles = makeStyles(() => ({
     subTitle: {
@@ -32,6 +33,7 @@ const Dashboard = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('AuthToken');
+        localStorage.removeItem('UserType');
         history.push('/login');
     }
 
@@ -39,6 +41,79 @@ const Dashboard = () => {
         history.push(url);
     }
 
+    const authenticatedButtons = (userType) => {
+        switch (userType) {
+            case 'resident':
+                return (
+                    <div>
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/log-complaint')}>Log Complaint</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/me/complaints')}>My Complaints</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/police-stations')}>All Police Stations</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/feedback')}>Submit Feedback</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small">View Article Book</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/me')}>My Account</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small">Change Password</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={handleLogout}>Logout</Button>
+                        <br />
+                        <br />
+                    </div>
+                )
+            case 'police':
+                return (
+                    <div>
+                        <Button color="primary" variant="contained" fullWidth size="small">Add Crime</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/criminal-registration')}>Add Criminal</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small">Add Police Station</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small">Add Category</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small">Add Article Book</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small">All Police Stations</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small">All Police Reports</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small">All Member Reports</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small">All Category Reports</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small">All Complaints</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small">All Feedback</Button>
+                        <br />
+                        <br />
+                    </div>
+                )
+            default:
+                break;
+        }
+    }
     useEffect(() => {
         authMiddleWare(history);
     })
@@ -50,47 +125,20 @@ const Dashboard = () => {
                 })} title="Processing" content={response.loading.text} />
             </React.Fragment>
             <MainNav />
-            <Container>
-            <Typography variant="h5" className={classes.subTitle}>WELCOME TO CRIMINAL RECORD MANAGEMENT SYSTEM</Typography>
-            <Divider />
-            <br />
-            {response.loading.boolean ? <LinearProgress /> : <div></div>}
-            <form>
-                <Container>
-                    <Grid container spacing={3}>
-                        <Grid item lg={9}>
-                            <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/log-complaint')}>Log Complaint</Button>
-                            <br />
-                            <br />
-                            <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/me/complaints')}>My Complaints</Button>
-                            <br />
-                            <br />
-                            <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/police-stations')}>All Police Stations</Button>
-                            <br />
-                            <br />
-                            <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/feedback')}>Submit Feedback</Button>
-                            <br />
-                            <br />
-                            <Button color="primary" variant="contained" fullWidth size="small">View Article Book</Button>
-                            <br />
-                            <br />
-                            <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/me')}>My Account</Button>
-                            <br />
-                            <br />
-                            <Button color="primary" variant="contained" fullWidth size="small">Change Password</Button>
-                            <br />
-                            <br />
-                            <Button color="primary" variant="contained" fullWidth size="small" onClick={handleLogout}>Logout</Button>
-                            <br />
-                            <br />
-                        </Grid>
-                        <Grid item lg={3}>
-                            
-                        </Grid>
+            <div style={{marginLeft: 20, marginRight: 20}}>
+                {response.loading.boolean ? <LinearProgress /> : <div></div>}
+                <Grid container spacing={2}>
+                    <Grid item lg={7}>
+                        <Typography variant="h5" className={classes.subTitle}>WELCOME TO CRIMINAL RECORD MANAGEMENT SYSTEM</Typography>
+                        <Divider />
+                        <br />
+                        {authenticatedButtons(localStorage.getItem('UserType'))}
                     </Grid>
-                </Container>
-            </form>
-            </Container>
+                    <Grid item lg={5}>
+                        <img src={cuffs} style={{width: 500, height: 500, paddingTop: 42}} />
+                    </Grid>
+                </Grid>
+            </div>
         </div>
     );
 };
