@@ -3,15 +3,16 @@ import './App.css';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Home from './pages/Home';
 import AboutProject from './pages/AboutProject';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import Login from './forms/Login';
+import Register from './forms/Register';
 import Dashboard from './pages/Dashboard';
-import SubmitComplaint from './partials/SubmitComplaint';
+import SubmitComplaint from './forms/SubmitComplaint';
 import Complaints from './partials/Complaints';
 import PoliceStations from './partials/PoliceStations';
-import SubmitFeedback from './partials/SubmitFeedback';
+import SubmitFeedback from './forms/SubmitFeedback';
 import ProfilePage from './partials/ProfilePage';
 import Criminals from './pages/Criminals';
+import CriminalRegistration from './forms/CriminalRegistration';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route exact path="/police-stations" component={PoliceStations} />
           <Route exact path="/feedback" component={SubmitFeedback} />
           <Route exact path="/criminals" component={Criminals} />
+          <Route exact path="/criminal-registration" component={CriminalRegistration} />
         </Switch>
       </BrowserRouter>
     </div>
