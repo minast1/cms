@@ -142,6 +142,9 @@ const Criminals = () => {
                     })
                 )}
             </div>
+            <Divider />
+            <Typography style={{textAlign: 'center'}}>&copy; Criminal Management System</Typography>
+            <br />
         </div>
     );
 };

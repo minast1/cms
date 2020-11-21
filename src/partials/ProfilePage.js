@@ -270,7 +270,7 @@ const ProfilePage = () => {
                     <Typography variant="h5" className={classes.subTitle}>PROFILE PICTURE</Typography>
                     <Divider />
                     <br />
-                    <img src={`${formData.profilePhoto}&token=74ff8789-2653-4e49-bb26-4c56d05ed159`} style={{width: 550, height: 700}}/>
+                    <img src={`${formData.profilePhoto}`} style={{width: 550, height: 700}} />
                     <br />
                 </Grid>
                 </Grid>
