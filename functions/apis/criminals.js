@@ -4,24 +4,24 @@ const config = require('../utils/config');
 exports.addCriminal = async (request, response) => {
     try {
         if (request.body.fullName.trim() === '') {
-            return response.status(400).json({ fullName: 'Must not be empty' });
+            return response.status(400).json({ message: 'fullName Must not be empty' });
         }
     
         if (request.body.height.trim() === '') {
-            return response.status(400).json({ height: 'Must not be empty' });
+            return response.status(400).json({ message: 'height Must not be empty' });
         }
     
         if (request.body.weight.trim() === '') {
-            return response.status(400).json({ weight: 'Must not be empty' });
+            return response.status(400).json({ message: 'weight Must not be empty' });
         }
         if (request.body.phoneNumber.trim() === '') {
-            return response.status(400).json({ phoneNumber: 'Must not be empty' });
+            return response.status(400).json({ message: 'phoneNumber Must not be empty' });
         }
         if (request.body.dateOfBirth.trim() === '') {
-            return response.status(400).json({ dateOfBirth: 'Must not be empty' });
+            return response.status(400).json({ message: 'dateOfBirth Must not be empty' });
         }
         if (request.body.criminalType.trim() === '') {
-            return response.status(400).json({ criminalType: 'Must not be empty' });
+            return response.status(400).json({ message: 'criminalType Must not be empty' });
         }
     
         const criminal = {
@@ -32,6 +32,7 @@ exports.addCriminal = async (request, response) => {
             dateOfBirth: request.body.dateOfBirth,
             weight: request.body.weight,
             criminalType: request.body.criminalType,
+            cityId: request.body.cityId,
             createdAt: new Date().toISOString()
         };
     
@@ -41,7 +42,7 @@ exports.addCriminal = async (request, response) => {
         return response.json(res);
     } catch (error) {
         console.log(error)
-        return response.status(400).json({ error: error.Message});
+        return response.status(400).json({ message: error.Message});
     }
 };
 
@@ -68,7 +69,7 @@ exports.getAllCriminals = (request, response) => {
         return response.json(criminals);
     })
     .catch(error => {
-        return response.status(500).json({ error: error });
+        return response.status(500).json({ message: error });
     })
 }
 
@@ -95,7 +96,7 @@ exports.uploadImage = (request, response) => {
 
     busboy.on('file', (filedName, file, fileName, encoding, mimeType) => {
         if (mimeType !== 'image/png' && mimeType !== 'image/jpeg') {
-            return response.status(400).json({ error: 'Wrong file type submitted' });
+            return response.status(400).json({ message: 'Wrong file type submitted' });
         }
         const imageExtension = fileName.split('.')[fileName.split('.').length-1];
         imageFileName = `${request.headers.email}.${imageExtension}`;
@@ -125,7 +126,7 @@ exports.uploadImage = (request, response) => {
         })
         .catch(err => {
             console.error(err);
-            return response.status(400).json({ error: err.code });
+            return response.status(400).json({ message: err });
         });
     });
     busboy.end(request.rawBody);

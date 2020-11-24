@@ -2,11 +2,11 @@ const { db } = require('../utils/admin');
 
 exports.addState = (request, response) => {
     if (request.body.name.trim() === '') {
-        return response.status(400).json({ name: 'Must not be empty' });
+        return response.status(400).json({ message: 'name Must not be empty' });
     }
 
     if (request.body.countryId.trim() === '') {
-        return response.status(400).json({ countryId: 'Must not be empty' });
+        return response.status(400).json({ message: 'countryId Must not be empty' });
     }
 
     const state = {
@@ -24,7 +24,7 @@ exports.addState = (request, response) => {
         return response.json(responseFeedback);
     })
     .catch((error) => {
-        response.status(500).json({ error: 'Something went wrong' });
+        response.status(500).json({ message: `Something went wrong: ${error.Message}` });
         console.error(error);
     });
 };
@@ -46,6 +46,6 @@ exports.getStates = (request, response) => {
         return response.json(states);
     })
     .catch(error => {
-        return response.status(500).json({ error: error });
+        return response.status(500).json({ message: error });
     })
 }

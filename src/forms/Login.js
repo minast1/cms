@@ -30,6 +30,7 @@ const Login = () => {
             password: login.password
         })
         .then(res => {
+            console.log(res);
             if (res.status == 200) {
                 const token = res.data.token;
                 Axios.get(`${AppConstants.apiEndpoint}/user`, {
@@ -47,14 +48,20 @@ const Login = () => {
                 .catch(error => {
                     console.log(error);
                 })
-            } else {
-                setLoading(false);
-                setErrorMessage(res.data.general);
+            }
+            if (res.status == 403) {
+                console.log("Falid");
             }
         })
         .catch(error => {
+            if (error.response) {
+                setErrorMessage(error.response.data.message);
+            }else if (error.request) {
+                setErrorMessage("Failed to communicate with the server.");
+            }else {
+                setErrorMessage("An unknown error occured");
+            }
             setLoading(false);
-            setErrorMessage(error);
         })
     }
 
@@ -66,6 +73,7 @@ const Login = () => {
                     <div  style={{marginLeft: 20, marginRight: 20}}>
                         <Typography variant="h5" className={classes.subTitle}>LOGIN TO YOUR ACCOUNT</Typography>
                         <Divider />
+                        <p style={{color: 'red'}}>{errorMessage}</p>
                         <br />
                         <form>
                             <Grid container spacing={3}>
@@ -95,6 +103,7 @@ const Login = () => {
                                     <br />
                                     <Button variant="contained" color="primary" onClick={handleLogin}>Submit</Button>{'       '}
                                     <Button variant="contained" color="primary">Reset</Button>
+                                    <br />
                                     <br />
                                     {loading ? <LinearProgress /> : <div></div>}
                                 </Grid>

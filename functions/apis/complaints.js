@@ -2,18 +2,18 @@ const { db } = require('../utils/admin');
 
 exports.createComplaint = (request, response) => {
     if (request.body.title.trim() === '') {
-        return response.status(400).json({ title: 'Must not be empty' });
+        return response.status(400).json({ message: 'title Must not be empty' });
     }
 
     if (request.body.fullAddress.trim() === '') {
-        return response.status(400).json({ fullAddress: 'Must not be empty' });
+        return response.status(400).json({ message: 'fullAddress Must not be empty' });
     }
 
     if (request.body.fullDetails.trim() === '') {
-        return response.status(400).json({ fullDetails: 'Must not be empty' });
+        return response.status(400).json({ message: 'fullDetails Must not be empty' });
     }
     if (request.body.stationId.trim() === '') {
-        return response.status(400).json({ stationId: 'Must not be empty' });
+        return response.status(400).json({ message: 'stationId Must not be empty' });
     }
 
     const newComplaint= {
@@ -35,28 +35,28 @@ exports.createComplaint = (request, response) => {
         return response.json(responseComplaint);
     })
     .catch((error) => {
-        response.status(500).json({ error: 'Something went wrong' });
+        response.status(500).json({ message: `Something went wrong: ${error.Message}` });
         console.error(error);
     });
 };
 
 exports.createFeedback = (request, response) => {
     if (request.body.name.trim() === '') {
-        return response.status(400).json({ name: 'Must not be empty' });
+        return response.status(400).json({ message: 'name Must not be empty' });
     }
 
     if (request.body.company.trim() === '') {
-        return response.status(400).json({ company: 'Must not be empty' });
+        return response.status(400).json({ message: 'company Must not be empty' });
     }
 
     if (request.body.email.trim() === '') {
-        return response.status(400).json({ email: 'Must not be empty' });
+        return response.status(400).json({ message: 'email Must not be empty' });
     }
     if (request.body.phone.trim() === '') {
-        return response.status(400).json({ phone: 'Must not be empty' });
+        return response.status(400).json({ message: 'phone Must not be empty' });
     }
     if (request.body.message.trim() === '') {
-        return response.status(400).json({ message: 'Must not be empty' });
+        return response.status(400).json({ message: 'message Must not be empty' });
     }
 
     const feedback= {
@@ -77,7 +77,7 @@ exports.createFeedback = (request, response) => {
         return response.json(responseFeedback);
     })
     .catch((error) => {
-        response.status(500).json({ error: 'Something went wrong' });
+        response.status(500).json({ message: `Something went wrong${error.Message}` });
         console.error(error);
     });
 };
@@ -104,6 +104,6 @@ exports.getMyComplaints = (request, response) => {
         return response.json(complaints);
     })
     .catch(error => {
-        return response.status(500).json({ error: error });
+        return response.status(500).json({ message: error });
     })
 }

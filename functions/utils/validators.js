@@ -52,20 +52,13 @@ exports.validateSignUpData = (data) => {
         errors.phoneNumber = "Must not be empty";
     }
 
-    if (isEmpty(data.country)) {
-        errors.country = "Must not be empty";
-    }
 
     if(isEmpty(data.addressLine1)) {
         errors.addressLine1 = "Must not be empty";
     }
 
-    if(isEmpty(data.city)) {
+    if(isEmpty(data.cityId)) {
         errors.city = "Must not be empty";
-    }
-
-    if(isEmpty(data.province)) {
-        errors.state = "Must not be empty";
     }
 
     if (isEmpty(data.password)) {

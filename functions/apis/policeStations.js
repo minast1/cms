@@ -19,6 +19,6 @@ exports.getAllPoliceStations = (request, response) => {
         return response.json(policeStations);
     })
     .catch(error => {
-        return response.status(500).json({ error: error });
+        return response.status(500).json({ message: error });
     })
 }

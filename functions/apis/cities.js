@@ -2,11 +2,11 @@ const { db } = require('../utils/admin');
 
 exports.addCity = (request, response) => {
     if (request.body.name.trim() === '') {
-        return response.status(400).json({ name: 'Must not be empty' });
+        return response.status(400).json({ message: 'name Must not be empty' });
     }
 
     if (request.body.stateId.trim() === '') {
-        return response.status(400).json({ stateId: 'Must not be empty' });
+        return response.status(400).json({ message: 'stateId Must not be empty' });
     }
 
     const city = {
@@ -24,7 +24,7 @@ exports.addCity = (request, response) => {
         return response.json(responseFeedback);
     })
     .catch((error) => {
-        response.status(500).json({ error: 'Something went wrong' });
+        response.status(500).json({ message: 'Something went wrong' });
         console.error(error);
     });
 };
@@ -46,6 +46,6 @@ exports.getCities = (request, response) => {
         return response.json(cities);
     })
     .catch(error => {
-        return response.status(500).json({ error: error });
+        return response.status(500).json({ message: error });
     })
 }
