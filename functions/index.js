@@ -9,7 +9,9 @@ const {
   loginUser,
   signUpUser,
   uploadProfilePhoto,
-  getUserDetails
+  getUserDetails,
+  sendCode,
+  changePassword
 } = require('./apis/users');
 
 const {
@@ -43,29 +45,52 @@ const {
   getCities
 } = require('./apis/cities');
 
+const {
+  addCourtType,
+  getCourtTypes,
+  addCourt
+} = require('./apis/courts');
+
+const {
+  uploadArticleBook,
+  addArticleBook
+} = require('./apis/articleBooks');
+
 app.get('/police-stations', auth, getAllPoliceStations);
 
 app.get('/user', auth, getUserDetails);
 app.post('/users/login', loginUser);
 app.post('/users/register', signUpUser);
 app.post('/users/profile-picture', auth, uploadProfilePhoto);
+app.post('/users/password-reset', auth, sendCode);
+app.post('/users/change-password', changePassword);
 
 app.post('/me/complaints', auth, createComplaint);
 app.get('/me/complaints', auth, getMyComplaints);
 
 app.post('/feedback', createFeedback);
 
-app.post('/criminals', addCriminal);
+app.post('/criminals', auth, addCriminal);
 app.post('/criminals/images', uploadImage);
 app.get('/criminals', getAllCriminals);
 
 app.post('/countries', auth, addCountry);
-app.get('/countries', auth, getCountries);
+app.get('/countries', getCountries);
 
 app.post('/states', auth, addState);
-app.get('/states', auth, getStates);
+app.get('/states', getStates);
 
 app.post('/cities', auth, addCity);
-app.get('/cities', auth, getCities);
+app.get('/cities', getCities);
+
+app.post('/police/register', auth, signUpUser);
+
+app.post('/court-types', auth, addCourtType);
+app.get('/court-types', auth, getCourtTypes);
+
+app.post('/courts', auth, addCourt);
+
+app.post('/article-books/add', auth, addArticleBook);
+app.post('/article-books/upload', auth, uploadArticleBook);
 
 exports.api = functions.https.onRequest(app);

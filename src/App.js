@@ -13,6 +13,11 @@ import SubmitFeedback from './forms/SubmitFeedback';
 import ProfilePage from './partials/ProfilePage';
 import Criminals from './pages/Criminals';
 import CriminalRegistration from './forms/CriminalRegistration';
+import RegisterPolice from './forms/RegisterPolice';
+import AddCourtType from './forms/AddCourtType';
+import AddArticleBook from './forms/AddArticleBook';
+import ChangePassword from './forms/ChangePassword';
+import AddCourt from './forms/AddCourt';
 
 function App() {
   return (
@@ -30,7 +35,12 @@ function App() {
           <Route exact path="/police-stations" component={PoliceStations} />
           <Route exact path="/feedback" component={SubmitFeedback} />
           <Route exact path="/criminals" component={Criminals} />
-          <Route exact path="/criminal-registration" component={CriminalRegistration} />
+          <Route exact path="/criminals/registration" component={CriminalRegistration} />
+          <Route exact path="/admin/police-officers/registration" component={RegisterPolice} />
+          <Route exact path="/admin/court-types/add" component={AddCourtType} />
+          <Route exact path="/police/article-books/add" component={AddArticleBook} />
+          <Route exact path="/me/change-password" component={ChangePassword} />
+          <Route exact path="/admin/courts/add" component={AddCourt} />
         </Switch>
       </BrowserRouter>
     </div>

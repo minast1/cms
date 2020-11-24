@@ -28,7 +28,7 @@ exports.loginUser = (request, response) => {
     })
     .catch((error) => {
         console.error(error);
-        return response.status(403).json({ general: 'Incorrect credentials. Please try again!' });
+        return response.status(403).json({ message: 'Incorrect credentials. Please try again!' });
     });
 };
 
@@ -40,12 +40,10 @@ exports.signUpUser = (request, response) => {
         dateOfBirth: request.body.dateOfBirth,
         addressLine1: request.body.addressLine1,
         addressLine2: request.body.addressLine2,
-        city: request.body.city,
-        province: request.body.province,
-        country: request.body.country,
+        cityId: request.body.cityId,
         password: request.body.password,
         confirmPassword: request.body.confirmPassword,
-        userType: 'resident'
+        userType: request.body.userType
     };
 
     const { errors, valid } = validateSignUpData(newUser);
@@ -61,7 +59,7 @@ exports.signUpUser = (request, response) => {
     .get()
     .then(document => {
         if (document.exists) {
-            return response.status(400).json({ username: "this email is already taken" });
+            return response.status(400).json({ message: "this email is already taken" });
         }else{
             return firebase.auth().createUserWithEmailAndPassword(
                 newUser.email,
@@ -78,13 +76,12 @@ exports.signUpUser = (request, response) => {
         const userCredentials = {
             fullName: newUser.fullName,
             dateOfBirth: newUser.dateOfBirth,
-            city: newUser.city,
+            cityId: newUser.cityId,
             email: newUser.email,
-            country: newUser.country,
             phoneNumber: newUser.phoneNumber,
-            province: newUser.province,
             addressLine1: newUser.addressLine1,
             addressLine2: newUser.addressLine2 ? newUser.addressLine2 : null,
+            userType: newUser.userType,
             createdAt: new Date().toISOString(),
             userId
         };
@@ -98,9 +95,9 @@ exports.signUpUser = (request, response) => {
     .catch(err => {
         console.error(err);
         if (err.code === 'auth/email-already-in-use') {
-            return response.status(400).json({ email: "Email is already in use" });
+            return response.status(400).json({ message: "Email is already in use" });
         } else {
-            return response.status(500).json({ general: "Something went wrong. Please try again" });
+            return response.status(500).json({ message: "Something went wrong. Please try again" });
         }
     });
 };
@@ -128,7 +125,7 @@ exports.uploadProfilePhoto = (request, response) => {
 
     busboy.on('file', (filedName, file, fileName, encoding, mimeType) => {
         if (mimeType !== 'image/png' && mimeType !== 'image/jpeg') {
-            return response.status(400).json({ error: 'Wrong file type submitted' });
+            return response.status(400).json({ message: 'Wrong file type submitted' });
         }
         const imageExtension =fileName.split('.')[fileName.split('.').length-1];
         imageFileName = `${request.user.email}.${imageExtension}`;
@@ -158,7 +155,7 @@ exports.uploadProfilePhoto = (request, response) => {
         })
         .catch(err => {
             console.error(err);
-            return response.status(400).json({ error: err.code });
+            return response.status(400).json({ message: err });
         });
     });
     busboy.end(request.rawBody);
@@ -178,6 +175,42 @@ exports.getUserDetails = (request, response) => {
     })
     .catch(err => {
         console.error(err);
-        return response.status(500).json({ error: err.code });
+        return response.status(500).json({ message: err });
     })
+}
+
+exports.sendCode = async (request, response) => {
+    try {
+        const data = await firebase.auth().sendPasswordResetEmail(request.user.email);
+        return response.json(data);
+    } catch (error) {
+        return response.status(500).json({ message: `Failed to send code: ${error}`})
+    }
+}
+exports.changePassword = async (request, response) => {
+    if (request.body.code.trim() === '') {
+        return response.status(400).json({ message: 'Code Must not be empty' });
+    }
+    if (request.body.password.trim() === '') {
+        return response.status(400).json({ message: 'Password Must not be empty' });
+    }
+    if (request.body.confirmPassword.trim() === '') {
+        return response.status(400).json({ message: 'Confirm Password Must not be empty' });
+    }
+    const user = {
+        password: code,
+        password: request.body.password,
+        confirmPassword: request.body.confirmPassword
+    }
+
+    if (user.password !== user.confirmPassword) {
+        return response.status(400).json({ message: 'The passwords do not match' });
+    }
+
+    try {
+        const data  = await firebase.auth().confirmPasswordReset(user.code, user.password);
+        return response.json(data);
+    } catch (error) {
+        return response.status(500).json({ message: error });
+    }
 }

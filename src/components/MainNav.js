@@ -63,9 +63,9 @@ const MainNav = () => {
                                 <ListItemText primary="SUBMIT FEEDBACK" />
                             </ListItem>
                         </Link>
-                        <Link href="/change-password" className={classes.linkText}>
+                        <Link href="/me/change-password" className={classes.linkText}>
                             <ListItem button>
-                                <ListItemText primary="CHANGE PASSWORD" />
+                                <ListItemText primary="CHANGE PASSWORD" onClick={() => history.push('/me/change-password')} />
                             </ListItem>
                         </Link>
                         <Link href="/login" className={classes.linkText}>
@@ -108,9 +108,9 @@ const MainNav = () => {
                                 <ListItemText primary="MY ACCOUNT" />
                             </ListItem>
                         </Link>
-                        <Link href="/change-password" className={classes.linkText}>
+                        <Link href="/me/change-password" className={classes.linkText}>
                             <ListItem button>
-                                <ListItemText primary="CHANGE PASSWORD" />
+                                <ListItemText primary="CHANGE PASSWORD" onClick={() => history.push('/me/change-password')} />
                             </ListItem>
                         </Link>
                         <Link href="/login" className={classes.linkText}>
@@ -148,9 +148,9 @@ const MainNav = () => {
                                     <ListItemText primary="REPORTS" />
                                 </ListItem>
                             </Link>
-                            <Link href="/change-password" className={classes.linkText}>
+                            <Link href="/me/change-password" className={classes.linkText}>
                                 <ListItem button>
-                                    <ListItemText primary="CHANGE PASSWORD" />
+                                    <ListItemText primary="CHANGE PASSWORD" onClick={() => history.push('/me/change-password')} />
                                 </ListItem>
                             </Link>
                             <Link href="/login" className={classes.linkText}>

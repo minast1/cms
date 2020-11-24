@@ -1,6 +1,6 @@
 import { Grid, TextField, Divider, Typography, makeStyles, Container, Button, LinearProgress } from '@material-ui/core';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MainNav from '../components/MainNav';
 import DateMoment from '@date-io/moment';
 import { Autocomplete } from '@material-ui/lab';
@@ -17,39 +17,11 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const provinces = [
-    {title: 'Lusaka', id: 'lusaka'},
-    {title: 'Central', id: 'central'},
-    {title: 'Copperbelt', id: 'copperbelt'},
-    {title: 'Southern', id: 'southern'},
-    {title: 'Eastern', id: 'eastern'},
-    {title: 'Luapula', id: 'luapula'},
-    {title: 'Northern', id: 'northern'},
-    {title: 'Western', id: 'western'},
-    {title: 'North-Western', id: 'northWestern'},
-    {title: 'Muchinga', id: 'muchinga'}
-];
-
-const cities = [
-    {title: 'Ndola', provinceId: 'copperbelt'},
-    {title: 'Lusaka', provinceId: 'lusaka'},
-    {title: 'Livingstone', provinceId: 'southern'},
-    {title: 'Kitwe', provinceId: 'copperbelt'},
-    {title: 'Chingola', provinceId: 'copperbelt'},
-    {title: 'MUfulira', provinceId: 'copperbelt'},
-    {title: 'Kasama', provinceId: 'northern'},
-    {title: 'Chipata', provinceId: 'eastern'},
-    {title: 'Luanshya', provinceId: 'copperbelt'},
-    {title: 'Kabwe', provinceId: 'central'}
-];
-
-const countries = [
-    {title: 'Zambia', id: 'ZM'}
-]
-
 const CriminalRegistration = () => {
     const classes = useStyles();
-    const history = useHistory();
+    const [countries, setCountries] = useState([]);
+    const [states, setStates] = useState([]);
+    const [cities, setCities] = useState([]);
     const [formData, setFormData] = useState({
         fullName: null,
         email: null,
@@ -59,15 +31,12 @@ const CriminalRegistration = () => {
         dateOfBirth: null,
         addressLine1: null,
         addressLine2: null,
-        country: null,
-        province: null,
         city: null,
         profilePhoto: null,
         content: null
     });
 
     const [response, setResponse] = useState({
-        citiesDisabled: true,
         loading: {
             boolean: false,
             text: ''
@@ -96,16 +65,20 @@ const CriminalRegistration = () => {
 			fullName: formData.fullName,
 			dateOfBirth: formData.dateOfBirth,
 			phoneNumber: formData.phoneNumber,
-			country: formData.country,
-			province: formData.province,
 			email: formData.email,
-			password: formData.password,
-            confirmPassword: formData.confirmPassword,
+			height: formData.height,
+            weight: formData.weight,
             addressLine1: formData.addressLine1,
             addressLine2: formData.addressLine2,
-            city: formData.city
+            criminalType: 'unknown',
+            cityId: formData.city.id
 		};
-        Axios.post(`${AppConstants.apiEndpoint}/users/register`, newUserData)
+        Axios.post(`${AppConstants.apiEndpoint}/criminals`, newUserData, {
+            headers: {
+                'Authorization': localStorage.getItem('AuthToken'),
+                'email': formData.email
+            }
+        })
         .then(res => {
             if (res.status == 201) {
                 setResponse({
@@ -120,14 +93,14 @@ const CriminalRegistration = () => {
             setResponse({
                 ...response, isDialogOpen: true, loading: { boolean: true, text: 'Uploading profile picture.'}
             })
-            localStorage.setItem("AuthToken", `Bearer ${res.data.token}`);
             let form_data = new FormData();
             form_data.append('image', formData.profilePhoto);
             form_data.append('content', formData.content);
-            Axios.post(`${AppConstants.apiEndpoint}/users/profile-picture`, form_data, {
+            Axios.post(`${AppConstants.apiEndpoint}/criminals/images`, form_data, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${res.data.token}`
+                    'Authorization': localStorage.getItem('AuthToken'),
+                    'email': formData.email
                 }
             }).then(res => {
                 if (res.status === 200) {
@@ -143,17 +116,55 @@ const CriminalRegistration = () => {
             .catch(error => {
                 console.log(error);
                 setResponse({
-                    ...response, isDialogOpen: true, errors: error, loading: { boolean: false, text: `Error: ${error}`}
+                    ...response, isDialogOpen: true, errors: error, loading: { boolean: false, text: error}
                 });
             })
         })
         .catch(err => {
             console.log(err);
             setResponse({
-                ...response, isDialogOpen: true, loading: { boolean: false, text: `Error: ${err}`}
+                ...response, isDialogOpen: true, loading: { boolean: false, text: err}
             })
         });
     };
+
+    useEffect(() => {
+        setResponse({...response, loading: {
+            boolean: true,
+            text: 'Initializing...'
+        }})
+        Axios.get(`${AppConstants.apiEndpoint}/countries`, {
+            headers: {
+                'Authorization': localStorage.getItem('AuthToken')
+            }
+        }).then(res => {
+            setCountries(res.data);
+            Axios.get(`${AppConstants.apiEndpoint}/states`, {
+                headers: {
+                    'Authorization': localStorage.getItem('AuthToken')
+                }
+            }).then(res => {
+                setStates(res.data);
+                Axios.get(`${AppConstants.apiEndpoint}/cities`, {
+                    headers: {
+                        'Authorization': localStorage.getItem('AuthToken')
+                    }
+                }).then(res => {
+                    setCities(res.data);
+                    setResponse({...response, loading: {
+                        boolean: false,
+                        text: ''
+                    }});
+                }).catch(err => {
+                    console.log(err);
+                })
+            }).catch(err => {
+                console.log(err);
+            })
+        }).catch(err => {
+            console.log(err);
+        });
+    }, []);
 
     return (
         <div>
@@ -166,7 +177,7 @@ const CriminalRegistration = () => {
             <div  style={{marginLeft: 20, marginRight: 20}}>
                 <Grid container spacing={2}>
                     <Grid item lg={7}>
-                        <Typography variant="h5" className={classes.subTitle}>REGISTRATION FROM</Typography>
+                        <Typography variant="h5" className={classes.subTitle}>CRIMINAL REGISTRATION FROM</Typography>
                         <Divider />
                         <br />
                         {response.loading.boolean ? <LinearProgress /> : <div></div>}
@@ -266,7 +277,7 @@ const CriminalRegistration = () => {
                                     <br />
                                     <Autocomplete
                                         options={countries}
-                                        getOptionLabel={option => option.title}
+                                        getOptionLabel={option => option.name}
                                         fullWidth
                                         size="small"
                                         onChange={(e, value) => setFormData({...formData, country: value})}
@@ -275,8 +286,8 @@ const CriminalRegistration = () => {
                                     <br />
                                     <br />
                                     <Autocomplete
-                                        options={provinces}
-                                        getOptionLabel={option => option.title}
+                                        options={states}
+                                        getOptionLabel={option => option.name}
                                         fullWidth
                                         size="small"
                                         onChange={(e, value) => setFormData({...formData, province: value}, setResponse({...response, citiesDisabled: false}))}
@@ -285,9 +296,8 @@ const CriminalRegistration = () => {
                                     <br />
                                     <br />
                                     <Autocomplete
-                                        options={formData.province ? citiesDropdown(formData.province.id) : cities}
-                                        disabled={response.citiesDisabled}
-                                        getOptionLabel={option => option.title}
+                                        options={cities}
+                                        getOptionLabel={option => option.name}
                                         fullWidth
                                         size="small"
                                         onChange={(e, value) => setFormData({...formData, city: value})}
