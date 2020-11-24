@@ -1,6 +1,6 @@
 import { Grid, TextField, Divider, Typography, makeStyles, Container, Button, LinearProgress } from '@material-ui/core';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MainNav from '../components/MainNav';
 import DateMoment from '@date-io/moment';
 import { Autocomplete } from '@material-ui/lab';
@@ -17,39 +17,12 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const provinces = [
-    {title: 'Lusaka', id: 'lusaka'},
-    {title: 'Central', id: 'central'},
-    {title: 'Copperbelt', id: 'copperbelt'},
-    {title: 'Southern', id: 'southern'},
-    {title: 'Eastern', id: 'eastern'},
-    {title: 'Luapula', id: 'luapula'},
-    {title: 'Northern', id: 'northern'},
-    {title: 'Western', id: 'western'},
-    {title: 'North-Western', id: 'northWestern'},
-    {title: 'Muchinga', id: 'muchinga'}
-];
-
-const cities = [
-    {title: 'Ndola', provinceId: 'copperbelt'},
-    {title: 'Lusaka', provinceId: 'lusaka'},
-    {title: 'Livingstone', provinceId: 'southern'},
-    {title: 'Kitwe', provinceId: 'copperbelt'},
-    {title: 'Chingola', provinceId: 'copperbelt'},
-    {title: 'MUfulira', provinceId: 'copperbelt'},
-    {title: 'Kasama', provinceId: 'northern'},
-    {title: 'Chipata', provinceId: 'eastern'},
-    {title: 'Luanshya', provinceId: 'copperbelt'},
-    {title: 'Kabwe', provinceId: 'central'}
-];
-
-const countries = [
-    {title: 'Zambia', id: 'ZM'}
-]
-
 const Register = () => {
     const classes = useStyles();
     const history = useHistory();
+    const [countries, setCountries] = useState([]);
+    const [states, setStates] = useState([]);
+    const [cities, setCities] = useState([]);
     const [formData, setFormData] = useState({
         fullName: null,
         email: null,
@@ -67,7 +40,6 @@ const Register = () => {
     });
 
     const [response, setResponse] = useState({
-        citiesDisabled: true,
         loading: {
             boolean: false,
             text: ''
@@ -103,7 +75,8 @@ const Register = () => {
             confirmPassword: formData.confirmPassword,
             addressLine1: formData.addressLine1,
             addressLine2: formData.addressLine2,
-            city: formData.city
+            city: formData.city.id,
+            userType: 'resident'
 		};
         Axios.post(`${AppConstants.apiEndpoint}/users/register`, newUserData)
         .then(res => {
@@ -154,6 +127,44 @@ const Register = () => {
             })
         });
     };
+
+    useEffect(() => {
+        setResponse({...response, loading: {
+            boolean: true,
+            text: 'Initializing...'
+        }})
+        Axios.get(`${AppConstants.apiEndpoint}/countries`, {
+            headers: {
+                'Authorization': localStorage.getItem('AuthToken')
+            }
+        }).then(res => {
+            setCountries(res.data);
+            Axios.get(`${AppConstants.apiEndpoint}/states`, {
+                headers: {
+                    'Authorization': localStorage.getItem('AuthToken')
+                }
+            }).then(res => {
+                setStates(res.data);
+                Axios.get(`${AppConstants.apiEndpoint}/cities`, {
+                    headers: {
+                        'Authorization': localStorage.getItem('AuthToken')
+                    }
+                }).then(res => {
+                    setCities(res.data);
+                    setResponse({...response, loading: {
+                        boolean: false,
+                        text: ''
+                    }});
+                }).catch(err => {
+                    console.log(err);
+                })
+            }).catch(err => {
+                console.log(err);
+            })
+        }).catch(err => {
+            console.log(err);
+        });
+    }, []);
 
     return (
         <div>
@@ -266,7 +277,7 @@ const Register = () => {
                                     <br />
                                     <Autocomplete
                                         options={countries}
-                                        getOptionLabel={option => option.title}
+                                        getOptionLabel={option => option.name}
                                         fullWidth
                                         size="small"
                                         onChange={(e, value) => setFormData({...formData, country: value})}
@@ -275,8 +286,8 @@ const Register = () => {
                                     <br />
                                     <br />
                                     <Autocomplete
-                                        options={provinces}
-                                        getOptionLabel={option => option.title}
+                                        options={states}
+                                        getOptionLabel={option => option.name}
                                         fullWidth
                                         size="small"
                                         onChange={(e, value) => setFormData({...formData, province: value}, setResponse({...response, citiesDisabled: false}))}
@@ -285,9 +296,8 @@ const Register = () => {
                                     <br />
                                     <br />
                                     <Autocomplete
-                                        options={formData.province ? citiesDropdown(formData.province.id) : cities}
-                                        disabled={response.citiesDisabled}
-                                        getOptionLabel={option => option.title}
+                                        options={cities}
+                                        getOptionLabel={option => option.name}
                                         fullWidth
                                         size="small"
                                         onChange={(e, value) => setFormData({...formData, city: value})}
