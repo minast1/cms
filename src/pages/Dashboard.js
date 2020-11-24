@@ -1,4 +1,4 @@
-import { Grid, Divider, Typography, makeStyles, Container, Button, LinearProgress } from '@material-ui/core';
+import { Grid, Divider, Typography, makeStyles, Button, LinearProgress } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import MainNav from '../components/MainNav';
 import { useHistory } from 'react-router-dom';
@@ -78,7 +78,7 @@ const Dashboard = () => {
                         <Button color="primary" variant="contained" fullWidth size="small">Add Crime</Button>
                         <br />
                         <br />
-                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/criminal-registration')}>Add Criminal</Button>
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/criminals/registration')}>Add Criminal</Button>
                         <br />
                         <br />
                         <Button color="primary" variant="contained" fullWidth size="small">Add Police Station</Button>
@@ -87,7 +87,7 @@ const Dashboard = () => {
                         <Button color="primary" variant="contained" fullWidth size="small">Add Category</Button>
                         <br />
                         <br />
-                        <Button color="primary" variant="contained" fullWidth size="small">Add Article Book</Button>
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/police/article-books/add')}>Add Article Book</Button>
                         <br />
                         <br />
                         <Button color="primary" variant="contained" fullWidth size="small">All Police Stations</Button>
@@ -109,7 +109,57 @@ const Dashboard = () => {
                         <br />
                         <br />
                     </div>
-                )
+                );
+            case 'admin':
+                return (
+                    <div>
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/admin/police-officers/registration')}>Add Police</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small">Add Crime</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/criminals/registration')}>Add Criminal</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/admin/courts/add')}>Add Court</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small">Add Prison</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small">Add Police Station</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small">Add Category</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/police/article-books/add')}>Add Article Book</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/admin/court-types/add')}>Add Court Type</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small">All Police Stations</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small">All Police Reports</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small">All Member Reports</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small">All Category Reports</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small">All Complaints</Button>
+                        <br />
+                        <br />
+                        <Button color="primary" variant="contained" fullWidth size="small">All Feedback</Button>
+                        <br />
+                        <br />
+                    </div>
+                );
             default:
                 break;
         }
