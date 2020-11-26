@@ -4,7 +4,7 @@ const firebase = require('firebase');
 
 firebase.initializeApp(config);
 
-const { validateLoginData, validateSignUpData} = require('../utils/validators');
+const { validateLoginData, validateSignUpData, updateProfileData} = require('../utils/validators');
 
 exports.loginUser = (request, response) => {
     const user = {
@@ -161,6 +161,32 @@ exports.uploadProfilePhoto = (request, response) => {
     busboy.end(request.rawBody);
 }
 
+exports.updateProfile = (request, response) => {
+    const updatedUser = {
+        fullName: request.body.fullName,
+        phoneNumber: request.body.phoneNumber,
+        dateOfBirth: request.body.dateOfBirth,
+        addressLine1: request.body.addressLine1,
+        addressLine2: request.body.addressLine2,
+        cityId: request.body.cityId
+    };
+
+    const { errors, valid } = updateProfileData(updatedUser);
+
+    if (!valid) {
+        return response.status(400).json({message: errors});
+    }
+
+    db
+    .doc(`users/${request.user.email}`)
+    .update(
+        updatedUser
+    ).then(res => {
+        return response.json(res);
+    }).catch(error => {
+        return response.status(500).json({ message: error });
+    });
+}
 
 exports.getUserDetails = (request, response) => {
     let userData = {};
@@ -185,32 +211,5 @@ exports.sendCode = async (request, response) => {
         return response.json(data);
     } catch (error) {
         return response.status(500).json({ message: `Failed to send code: ${error}`})
-    }
-}
-exports.changePassword = async (request, response) => {
-    if (request.body.code.trim() === '') {
-        return response.status(400).json({ message: 'Code Must not be empty' });
-    }
-    if (request.body.password.trim() === '') {
-        return response.status(400).json({ message: 'Password Must not be empty' });
-    }
-    if (request.body.confirmPassword.trim() === '') {
-        return response.status(400).json({ message: 'Confirm Password Must not be empty' });
-    }
-    const user = {
-        password: code,
-        password: request.body.password,
-        confirmPassword: request.body.confirmPassword
-    }
-
-    if (user.password !== user.confirmPassword) {
-        return response.status(400).json({ message: 'The passwords do not match' });
-    }
-
-    try {
-        const data  = await firebase.auth().confirmPasswordReset(user.code, user.password);
-        return response.json(data);
-    } catch (error) {
-        return response.status(500).json({ message: error });
     }
 }
