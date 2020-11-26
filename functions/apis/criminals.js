@@ -73,6 +73,22 @@ exports.getAllCriminals = (request, response) => {
     })
 }
 
+exports.getCriminal = (request, response) => {
+    db
+    .doc(`/criminals/${request.params.id}`)
+    .get()
+    .then(doc => {
+        if (doc.exists){
+            return response.json(doc.data());
+        } else {
+            return response.json({ message: 'Criminal does not exist.' });
+        }
+    })
+    .catch(error => {
+        return response.status(500).json({ message: error });
+    });
+}
+
 deleteImage = (imageName) => {
     const bucket = admin.storage().bucket();
     const path = `${imageName}`;
