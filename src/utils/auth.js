@@ -6,6 +6,6 @@ export const authMiddleWare = (history) => {
 
 export const handleLogout = (history) => {
     localStorage.removeItem('AuthToken');
-    localStorage.removeItem('userType');
+    localStorage.removeItem('UserType');
     history.push('/login');
 }
