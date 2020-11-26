@@ -11,11 +11,11 @@ const {
   uploadProfilePhoto,
   getUserDetails,
   sendCode,
-  changePassword
+  updateProfile
 } = require('./apis/users');
 
 const {
-  getAllPoliceStations
+  getAllPoliceStations, addPoliceStation
 } = require('./apis/policeStations');
 
 const {
@@ -27,7 +27,8 @@ const {
 const {
   addCriminal,
   uploadImage,
-  getAllCriminals
+  getAllCriminals,
+  getCriminal
 } = require('./apis/criminals');
 
 const {
@@ -53,9 +54,16 @@ const {
 
 const {
   uploadArticleBook,
-  addArticleBook
+  addArticleBook,
+  getArticleBooks
 } = require('./apis/articleBooks');
 
+const {
+  addCrimeCategory,
+  getCrimeCategories
+} = require('./apis/crimeCategories');
+
+app.post('/police-stations', auth, addPoliceStation);
 app.get('/police-stations', auth, getAllPoliceStations);
 
 app.get('/user', auth, getUserDetails);
@@ -63,7 +71,7 @@ app.post('/users/login', loginUser);
 app.post('/users/register', signUpUser);
 app.post('/users/profile-picture', auth, uploadProfilePhoto);
 app.post('/users/password-reset', auth, sendCode);
-app.post('/users/change-password', changePassword);
+app.post('/users/update', auth, updateProfile);
 
 app.post('/me/complaints', auth, createComplaint);
 app.get('/me/complaints', auth, getMyComplaints);
@@ -73,6 +81,7 @@ app.post('/feedback', createFeedback);
 app.post('/criminals', auth, addCriminal);
 app.post('/criminals/images', uploadImage);
 app.get('/criminals', getAllCriminals);
+app.get('/criminals/:id', getCriminal);
 
 app.post('/countries', auth, addCountry);
 app.get('/countries', getCountries);
@@ -92,5 +101,9 @@ app.post('/courts', auth, addCourt);
 
 app.post('/article-books/add', auth, addArticleBook);
 app.post('/article-books/upload', auth, uploadArticleBook);
+app.get('/article-books', auth, getArticleBooks);
+
+app.post('/crime-categories', auth, addCrimeCategory);
+app.get('/crime-categories', auth, getCrimeCategories);
 
 exports.api = functions.https.onRequest(app);
