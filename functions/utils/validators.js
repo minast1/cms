@@ -76,3 +76,32 @@ exports.validateSignUpData = (data) => {
         valid: Object.keys(errors).length === 0 ? true : false
     };
 }
+
+exports.updateProfileData = (data) => {
+    let errors = {};
+
+    if (isEmpty(data.fullName)) {
+        errors.fullName = "Must not be empty";
+    }
+
+    if (isEmpty(data.dateOfBirth)) {
+        errors.dateOfBirth = "Must not be empty";
+    }
+
+    if (isEmpty(data.phoneNumber)) {
+        errors.phoneNumber = "Must not be empty";
+    }
+
+    if(isEmpty(data.addressLine1)) {
+        errors.addressLine1 = "Must not be empty";
+    }
+
+    if(isEmpty(data.cityId)) {
+        errors.city = "Must not be empty";
+    }
+
+    return {
+        errors,
+        valid: Object.keys(errors).length === 0 ? true : false
+    };
+}
