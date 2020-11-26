@@ -1,11 +1,12 @@
 import { Grid, TextField, Divider, Typography, makeStyles, Button, LinearProgress } from '@material-ui/core';
 import Axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import CustomDialog from '../components/CustomDialog';
 import MainNav from '../components/MainNav';
 import { AppConstants } from '../constants/AppConstants';
 import cuffs from '../images/investigation.jpg';
+import { authMiddleWare, handleLogout } from '../utils/auth';
 
 const useStyles = makeStyles((theme) => ({
     subTitle: {
@@ -55,12 +56,9 @@ const ChangePassword = () => {
         })
     }
     
-    const handleLogout = () => {
-        localStorage.removeItem('AuthToken');
-        localStorage.removeItem('UserType');
-        history.push('/login');
-    }
-    
+    useEffect(() => {
+        authMiddleWare(history);
+    })
     return (
         <div>
             <React.Fragment>

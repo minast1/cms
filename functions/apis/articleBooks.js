@@ -24,6 +24,7 @@ exports.addArticleBook = (request, response) => {
         return response.status(500).json({ message: `Something went wrong: ${error.Message}` });
     })
 }
+
 deleteImage = (imageName) => {
     const bucket = admin.storage().bucket();
     const path = `${imageName}`;
@@ -82,4 +83,26 @@ exports.uploadArticleBook = (request, response) => {
         });
     });
     busboy.end(request.rawBody);
+}
+
+exports.getArticleBooks = (request, response) => {
+    db
+    .collection('article-books')
+    .get()
+    .then(data => {
+        let articles = [];
+        data.forEach(item => {
+            articles.push({
+                id: item.id,
+                title: item.data().title,
+                description: item.data().description,
+                fileUrl: item.data().fileUrl,
+                createdAt: item.data().createdAt
+            });
+        });
+        return response.json(articles);
+    })
+    .catch(error => {
+        return response.status(500).json({ message: error });
+    })
 }

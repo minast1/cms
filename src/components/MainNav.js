@@ -1,6 +1,7 @@
-import { AppBar, Container, Link, List, ListItem, ListItemText, makeStyles, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Container, Link, List, ListItem, ListItemText, makeStyles, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { handleLogout } from '../utils/auth';
 
 const useStyles = makeStyles((theme) => ({
     title: {
@@ -27,11 +28,22 @@ const MainNav = () => {
     const classes = useStyles();
     const history = useHistory();
 
-    const handleLogout = () => {
-        localStorage.removeItem('AuthToken');
-        localStorage.removeItem('UserType');
-        history.push('/login');
-    }
+    const [dropdownMenu, setDropdownMenu] = useState({
+        anchorEl: null,
+        open: false
+    });
+
+    const handleShowMenu = (e) => {
+        setDropdownMenu({
+            ...dropdownMenu, open: true, anchorEl: e.currentTarget
+        });
+    };
+
+    const handleCloseMennu = (e) => {
+        setDropdownMenu({
+            ...dropdownMenu, open: false, anchorEl: null
+        });
+    };
 
     const authenticatedNavButtons = (userType) => {
         switch(userType) {
@@ -70,7 +82,7 @@ const MainNav = () => {
                         </Link>
                         <Link href="/login" className={classes.linkText}>
                             <ListItem button>
-                                <ListItemText primary="LOGOUT" onClick={handleLogout} />
+                                <ListItemText primary="LOGOUT" onClick={() => handleLogout(history)} />
                             </ListItem>
                         </Link>
                     </List>
@@ -100,7 +112,28 @@ const MainNav = () => {
                         </Link>
                         <Link href="/reports" className={classes.linkText}>
                             <ListItem button>
-                                <ListItemText primary="REPORTS" />
+                                <ListItemText
+                                    primary="REPORTS"
+                                    aria-haspopup="true"
+                                    aria-owns={dropdownMenu.open ? 'reports-dropdown-menu' : null}
+                                    onMouseOver={handleShowMenu}
+                                />
+                                <Menu
+                                    open={dropdownMenu.open}
+                                    anchorEl={dropdownMenu.anchorEl}
+                                    id="reports-dropdown-menu"
+                                    onRequestClose={handleCloseMennu}
+                                >
+                                    <MenuItem>ALL POLICE STATIONS</MenuItem>
+                                    <MenuItem>ALL POLICE REPORT</MenuItem>
+                                    <MenuItem>ALL MEMBERS REPORT</MenuItem>
+                                    <MenuItem>ALL CATEGORY REPORT</MenuItem>
+                                    <MenuItem>ALL COMPLAINTS</MenuItem>
+                                    <MenuItem>ALL FEEDBACK</MenuItem>
+                                    <MenuItem>ALL CRIMES REPORT</MenuItem>
+                                    <MenuItem onClick={(e) => history.push('/criminals')}>ALL CRIMINALS REPORT</MenuItem>
+                                    <MenuItem>ALL ARTICLE BOOKS</MenuItem>
+                                </Menu>
                             </ListItem>
                         </Link>
                         <Link href="/me"  className={classes.linkText}>
@@ -143,9 +176,25 @@ const MainNav = () => {
                                     <ListItemText primary="ADMINISTRATION" />
                                 </ListItem>
                             </Link>
-                            <Link href="/reports" className={classes.linkText}>
+                            <Link className={classes.linkText}>
                                 <ListItem button>
-                                    <ListItemText primary="REPORTS" />
+                                    <ListItemText
+                                        primary="REPORTS"
+                                        aria-haspopup="true"
+                                        aria-owns={dropdownMenu.open ? 'reports-dropdown-menu' : null}
+                                        onMouseOver={handleShowMenu}
+                                    />
+                                    <Menu open={dropdownMenu.open} anchorEl={dropdownMenu.anchorEl} id="reports-dropdown-menu">
+                                        <MenuItem>ALL POLICE STATIONS</MenuItem>
+                                        <MenuItem>ALL POLICE REPORT</MenuItem>
+                                        <MenuItem>ALL MEMBERS REPORT</MenuItem>
+                                        <MenuItem>ALL CATEGORY REPORT</MenuItem>
+                                        <MenuItem>ALL COMPLAINTS</MenuItem>
+                                        <MenuItem>ALL FEEDBACK</MenuItem>
+                                        <MenuItem>ALL CRIMES REPORT</MenuItem>
+                                        <MenuItem onClick={(e) => history.push('/criminals')}>ALL CRIMINALS REPORT</MenuItem>
+                                        <MenuItem>ALL ARTICLE BOOKS</MenuItem>
+                                    </Menu>
                                 </ListItem>
                             </Link>
                             <Link href="/me/change-password" className={classes.linkText}>

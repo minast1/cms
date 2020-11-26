@@ -9,6 +9,7 @@ import Axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import CustomDialog from '../components/CustomDialog';
 import cuffs from '../images/investigation.jpg';
+import { authMiddleWare } from '../utils/auth';
 
 const useStyles = makeStyles((theme) => ({
     subTitle: {
@@ -19,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 const CriminalRegistration = () => {
     const classes = useStyles();
+    const history = useHistory();
     const [countries, setCountries] = useState([]);
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
@@ -129,6 +131,7 @@ const CriminalRegistration = () => {
     };
 
     useEffect(() => {
+        authMiddleWare(history);
         setResponse({...response, loading: {
             boolean: true,
             text: 'Initializing...'

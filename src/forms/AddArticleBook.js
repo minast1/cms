@@ -1,10 +1,12 @@
 import { Grid, TextField, Divider, Typography, makeStyles, Button, LinearProgress, TextareaAutosize } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MainNav from '../components/MainNav';
 import { AppConstants } from '../constants/AppConstants';
 import Axios from 'axios';
 import CustomDialog from '../components/CustomDialog';
 import cuffs from '../images/investigation.jpg';
+import { authMiddleWare } from '../utils/auth';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
     subTitle: {
@@ -15,6 +17,7 @@ const useStyles = makeStyles(() => ({
 
 const AddArticleBook = () => {
     const classes = useStyles();
+    const history = useHistory();
     const [formData, setFormData] = useState({
         title: null,
         description: null,
@@ -85,6 +88,9 @@ const AddArticleBook = () => {
         });
     };
 
+    useEffect(() => {
+        authMiddleWare(history);
+    })
     return (
         <div>
             <React.Fragment>

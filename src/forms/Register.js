@@ -10,7 +10,7 @@ import { useHistory } from 'react-router-dom';
 import CustomDialog from '../components/CustomDialog';
 import cuffs from '../images/investigation.jpg';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     subTitle: {
         paddingTop: 10,
         marginLeft: 20
@@ -19,7 +19,6 @@ const useStyles = makeStyles((theme) => ({
 
 const Register = () => {
     const classes = useStyles();
-    const history = useHistory();
     const [countries, setCountries] = useState([]);
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);

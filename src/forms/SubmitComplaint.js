@@ -7,7 +7,7 @@ import Axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { authMiddleWare } from '../utils/auth';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     subTitle: {
         paddingTop: 10
     }

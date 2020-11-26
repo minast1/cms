@@ -1,4 +1,4 @@
-import { Grid, TextField, Divider, Typography, makeStyles, Container, Button, LinearProgress } from '@material-ui/core';
+import { Grid, TextField, Divider, Typography, makeStyles, Button, LinearProgress } from '@material-ui/core';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import React, { useEffect, useState } from 'react';
 import MainNav from '../components/MainNav';
@@ -9,8 +9,9 @@ import Axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import CustomDialog from '../components/CustomDialog';
 import cuffs from '../images/investigation.jpg';
+import { authMiddleWare } from '../utils/auth';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     subTitle: {
         paddingTop: 10,
         marginLeft: 20
@@ -138,6 +139,7 @@ const RegisterPolice = () => {
     };
 
     useEffect(() => {
+        authMiddleWare(history);
         setResponse({...response, loading: {
             boolean: true,
             text: 'Initializing...'

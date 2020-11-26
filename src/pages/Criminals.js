@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import MainNav from '../components/MainNav';
 import { AppConstants } from '../constants/AppConstants';
 import Axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     subTitle: {
@@ -20,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Criminals = () => {
     const classes = useStyles();
+    const history = useHistory();
     const [criminals, setCriminals] = useState([]);
     const [responseValues, setResponseValues] = useState({
         loading: false
@@ -42,6 +44,10 @@ const Criminals = () => {
         getAllCriminals();
     }, []);
 
+    const showCriminal = (id) => {
+        localStorage.setItem('CriminalId', id);
+        history.push(`/criminals/${id}`);
+    }
     return (
         <div>
             <MainNav />
@@ -56,7 +62,7 @@ const Criminals = () => {
                                 <Grid container spacing={2}>
                                 <Grid item lg={2.5}>
                                     <Paper>
-                                        <img src={criminal.imageUrl} style={{width:310, height: 290}}/>
+                                        <img src={criminal.imageUrl} style={{width:310, height: 290}} onClick={(e) => showCriminal(criminal.id)}/>
                                     </Paper>
                                 </Grid>
                                 <Grid item lg={6}>
@@ -125,7 +131,7 @@ const Criminals = () => {
                                         <Paper>
                                             <Grid container spacing={2}>
                                                 <Grid item xs={6}>
-                                                    <Button variant="contained" color="primary" style={{marginRight: 0, float: 'right'}}>View Details</Button>
+                                                    <Button variant="contained" color="primary" style={{marginRight: 0, float: 'right'}} onClick={(e) => showCriminal(criminal.id)}>View Details</Button>
                                                 </Grid>
                                                 <Grid item xs={6}>
                                                     <Button variant="contained" color="primary">View Crimes</Button>

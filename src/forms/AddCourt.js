@@ -6,7 +6,7 @@ import Axios from 'axios';
 import CustomDialog from '../components/CustomDialog';
 import cuffs from '../images/investigation.jpg';
 import { useHistory } from 'react-router-dom';
-import { handleLogout } from '../utils/auth';
+import { authMiddleWare, handleLogout } from '../utils/auth';
 import { Autocomplete } from '@material-ui/lab';
 
 const useStyles = makeStyles(() => ({
@@ -91,6 +91,7 @@ const AddCourt = () => {
     };
 
     useEffect(() => {
+        authMiddleWare(history);
         setResponse({
             ...response, loading: { boolean: true, text: 'Loading court types', title: 'Processing' }
         });

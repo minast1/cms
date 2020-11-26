@@ -52,19 +52,19 @@ const Dashboard = () => {
                         <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/me/complaints')}>My Complaints</Button>
                         <br />
                         <br />
-                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/police-stations')}>All Police Stations</Button>
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/resident/police-stations')}>All Police Stations</Button>
                         <br />
                         <br />
                         <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/feedback')}>Submit Feedback</Button>
                         <br />
                         <br />
-                        <Button color="primary" variant="contained" fullWidth size="small">View Article Book</Button>
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL("/resident/article-books")}>View Article Books</Button>
                         <br />
                         <br />
                         <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/me')}>My Account</Button>
                         <br />
                         <br />
-                        <Button color="primary" variant="contained" fullWidth size="small">Change Password</Button>
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/me/change-password')}>Change Password</Button>
                         <br />
                         <br />
                         <Button color="primary" variant="contained" fullWidth size="small" onClick={handleLogout}>Logout</Button>
@@ -78,19 +78,19 @@ const Dashboard = () => {
                         <Button color="primary" variant="contained" fullWidth size="small">Add Crime</Button>
                         <br />
                         <br />
-                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/criminals/registration')}>Add Criminal</Button>
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/police/criminals/registration')}>Add Criminal</Button>
                         <br />
                         <br />
-                        <Button color="primary" variant="contained" fullWidth size="small">Add Police Station</Button>
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/police/police-stations/add')}>Add Police Station</Button>
                         <br />
                         <br />
-                        <Button color="primary" variant="contained" fullWidth size="small">Add Category</Button>
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/police/crime-categories/add')}>Add Category</Button>
                         <br />
                         <br />
                         <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/police/article-books/add')}>Add Article Book</Button>
                         <br />
                         <br />
-                        <Button color="primary" variant="contained" fullWidth size="small">All Police Stations</Button>
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/resident/police-stations')}>All Police Stations</Button>
                         <br />
                         <br />
                         <Button color="primary" variant="contained" fullWidth size="small">All Police Reports</Button>
@@ -119,7 +119,7 @@ const Dashboard = () => {
                         <Button color="primary" variant="contained" fullWidth size="small">Add Crime</Button>
                         <br />
                         <br />
-                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/criminals/registration')}>Add Criminal</Button>
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/police/criminals/registration')}>Add Criminal</Button>
                         <br />
                         <br />
                         <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/admin/courts/add')}>Add Court</Button>
@@ -128,10 +128,10 @@ const Dashboard = () => {
                         <Button color="primary" variant="contained" fullWidth size="small">Add Prison</Button>
                         <br />
                         <br />
-                        <Button color="primary" variant="contained" fullWidth size="small">Add Police Station</Button>
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/police/police-stations/add')}>Add Police Station</Button>
                         <br />
                         <br />
-                        <Button color="primary" variant="contained" fullWidth size="small">Add Category</Button>
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/police/crime-categories/add')}>Add Category</Button>
                         <br />
                         <br />
                         <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/police/article-books/add')}>Add Article Book</Button>
@@ -140,16 +140,16 @@ const Dashboard = () => {
                         <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/admin/court-types/add')}>Add Court Type</Button>
                         <br />
                         <br />
-                        <Button color="primary" variant="contained" fullWidth size="small">All Police Stations</Button>
+                        <Button color="primary" variant="contained" fullWidth size="small" onClick={() => goToURL('/resident/police-stations')}>All Police Stations</Button>
                         <br />
                         <br />
-                        <Button color="primary" variant="contained" fullWidth size="small">All Police Reports</Button>
+                        <Button color="primary" variant="contained" fullWidth size="small">All Police Report</Button>
                         <br />
                         <br />
-                        <Button color="primary" variant="contained" fullWidth size="small">All Member Reports</Button>
+                        <Button color="primary" variant="contained" fullWidth size="small">All Members Report</Button>
                         <br />
                         <br />
-                        <Button color="primary" variant="contained" fullWidth size="small">All Category Reports</Button>
+                        <Button color="primary" variant="contained" fullWidth size="small">All Categories Report</Button>
                         <br />
                         <br />
                         <Button color="primary" variant="contained" fullWidth size="small">All Complaints</Button>
