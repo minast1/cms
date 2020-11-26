@@ -5,7 +5,7 @@ import { Alert } from '@material-ui/lab';
 import { AppConstants } from '../constants/AppConstants';
 import Axios from 'axios';
 import { useHistory } from 'react-router-dom';
-import { authMiddleWare } from '../utils/auth';
+import { authMiddleWare, handleLogout } from '../utils/auth';
 import MaterialTable from 'material-table';
 
 const headerStyle = {
@@ -27,26 +27,32 @@ const headerStyle = {
     fontFamily: 'Poppins, sans-serif'
   };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     subTitle: {
         paddingTop: 10,
         marginLeft: 20
     }
 }));
 
-const PoliceStations = () => {
+const ViewPoliceStations = () => {
     const classes = useStyles();
     const history = useHistory();
     const [stations, setStations] = useState([]);
-    const [responseValues, setResponseValues] = useState({
-        loading: false
+    const [response, setResponse] = useState({
+        loading: {
+            boolean: false,
+            text: '',
+            title: ''
+        },
+        errors: null,
+        isDialogOpen: false
     });
 
     const getAllPoliceStations = () => {
         const headers = {
             'Authorization': localStorage.getItem('AuthToken')
         }
-        setResponseValues({...responseValues, loading: true});
+        setResponse({...response, isDialogOpen: true, loading: {boolean: true, title: 'Loading', text: 'Loading stations...'}});
         Axios.get(`${AppConstants.apiEndpoint}/police-stations`, {
             headers: headers
         })
@@ -65,11 +71,30 @@ const PoliceStations = () => {
                 });
                 setStations(tableData);
             }
-            setResponseValues({...responseValues, loading: false});
+            setResponse({...response, isDialogOpen: false, loading: {boolean: false}});
         })
         .catch(error => {
-            setResponseValues({...responseValues, loading: false});
-            console.log(error);
+            if (error.response) {
+                if (error.response.status == 403 ) {
+                    handleLogout(history);
+                } else if (error.response.status == 404) {
+                    setResponse({
+                        ...response, isDialogOpen: true, loading: { boolean: false, text: 'Page not found', title: 'Not found' }
+                    });
+                } else {
+                    setResponse({
+                        ...response, isDialogOpen: true, loading: { boolean: false, text: error.response.body.message, title: 'Error' }
+                    });
+                }
+            } else if (error.request) {
+                setResponse({
+                    ...response, isDialogOpen: true, loading: {boolean: false, text: 'Failed to communicate with the server. Ensure you have a stable internet connection', title: 'Error'}
+                });
+            } else {
+                setResponse({
+                    ...response, isDialogOpen: true, loading: {boolean: false, text: error, title: 'Unknown Error'}
+                });
+            }
         })
     }
 
@@ -84,7 +109,7 @@ const PoliceStations = () => {
             <Typography variant="h5" className={classes.subTitle}>All Police Stations</Typography>
             <Divider />
             <br />
-            {responseValues.loading ? <LinearProgress /> : <div></div>}
+            {response.loading ? <LinearProgress /> : <div></div>}
             <form>
                 <Container>
                 <MaterialTable
@@ -116,9 +141,9 @@ const PoliceStations = () => {
                     }
                     ]}
                     options={{
-                    rowStyle,
-                    headerStyle,
-                    toolbar: false
+                        rowStyle,
+                        headerStyle,
+                        toolbar: false
                     }}
                     data={stations}
                 />
@@ -128,4 +153,4 @@ const PoliceStations = () => {
     );
 };
 
-export default PoliceStations;
+export default ViewPoliceStations;
