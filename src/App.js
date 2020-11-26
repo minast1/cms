@@ -8,7 +8,6 @@ import Register from './forms/Register';
 import Dashboard from './pages/Dashboard';
 import SubmitComplaint from './forms/SubmitComplaint';
 import Complaints from './partials/Complaints';
-import PoliceStations from './partials/PoliceStations';
 import SubmitFeedback from './forms/SubmitFeedback';
 import ProfilePage from './partials/ProfilePage';
 import Criminals from './pages/Criminals';
@@ -18,6 +17,11 @@ import AddCourtType from './forms/AddCourtType';
 import AddArticleBook from './forms/AddArticleBook';
 import ChangePassword from './forms/ChangePassword';
 import AddCourt from './forms/AddCourt';
+import AddCrimeCategory from './forms/AddCrimeCategory';
+import CriminalDetails from './pages/CiminalDetails';
+import ViewArticleBooks from './pages/ViewArticleBooks';
+import ViewPoliceStations from './pages/ViewPoliceStations';
+import AddPoliceStation from './forms/AddPoliceStation';
 
 function App() {
   return (
@@ -32,15 +36,19 @@ function App() {
           <Route exact path="/log-complaint" component={SubmitComplaint} />
           <Route exact path="/me/complaints" component={Complaints} />
           <Route exact path="/me" component={ProfilePage} />
-          <Route exact path="/police-stations" component={PoliceStations} />
+          <Route exact path="/resident/police-stations" component={ViewPoliceStations} />
+          <Route exact path="/police/police-stations/add" component={AddPoliceStation} />
           <Route exact path="/feedback" component={SubmitFeedback} />
           <Route exact path="/criminals" component={Criminals} />
-          <Route exact path="/criminals/registration" component={CriminalRegistration} />
+          <Route exact path="police/criminals/registration" component={CriminalRegistration} />
           <Route exact path="/admin/police-officers/registration" component={RegisterPolice} />
           <Route exact path="/admin/court-types/add" component={AddCourtType} />
           <Route exact path="/police/article-books/add" component={AddArticleBook} />
           <Route exact path="/me/change-password" component={ChangePassword} />
           <Route exact path="/admin/courts/add" component={AddCourt} />
+          <Route exact path="/police/crime-categories/add" component={AddCrimeCategory} />
+          <Route exact path="/criminals/:id" component={CriminalDetails} /> 
+          <Route exact path="/resident/article-books" component={ViewArticleBooks} />
         </Switch>
       </BrowserRouter>
     </div>
