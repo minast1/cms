@@ -7,6 +7,9 @@ import { AppConstants } from '../constants/AppConstants';
 import Axios from 'axios';
 import DateMoment from '@date-io/moment';
 import { Autocomplete } from '@material-ui/lab';
+import { handleLogout } from '../utils/auth';
+import CustomDialog from '../components/CustomDialog';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
     subTitle: {
@@ -17,43 +20,11 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-const provinces = [
-    {title: 'Lusaka', id: 'lusaka'},
-    {title: 'Central', id: 'central'},
-    {title: 'Copperbelt', id: 'copperbelt'},
-    {title: 'Southern', id: 'southern'},
-    {title: 'Eastern', id: 'eastern'},
-    {title: 'Luapula', id: 'luapula'},
-    {title: 'Northern', id: 'northern'},
-    {title: 'Western', id: 'western'},
-    {title: 'North-Western', id: 'northWestern'},
-    {title: 'Muchinga', id: 'muchinga'}
-];
-
-const cities = [
-    {title: 'Ndola', provinceId: 'copperbelt'},
-    {title: 'Lusaka', provinceId: 'lusaka'},
-    {title: 'Livingstone', provinceId: 'southern'},
-    {title: 'Kitwe', provinceId: 'copperbelt'},
-    {title: 'Chingola', provinceId: 'copperbelt'},
-    {title: 'MUfulira', provinceId: 'copperbelt'},
-    {title: 'Kasama', provinceId: 'northern'},
-    {title: 'Chipata', provinceId: 'eastern'},
-    {title: 'Luanshya', provinceId: 'copperbelt'},
-    {title: 'Kabwe', provinceId: 'central'}
-];
-
-const countries = [
-    {title: 'Zambia', id: 'ZM'}
-]
-
 const ProfilePage = () => {
     const classes = useStyles();
+    const history = useHistory();
     const [formData, setFormData] = useState({
         fullName: null,
-        email: null,
-        password: null,
-        confirmPassword: null,
         phoneNumber: null,
         dateOfBirth: null,
         addressLine1: null,
@@ -64,86 +35,214 @@ const ProfilePage = () => {
         profilePhoto: null,
         content: null
     });
-    const [responseValues, setResponseValues] = useState({
-        success: false,
-        failed: false,
-        loading: false,
-        citiesDisabled: true
+    const [response, setResponse] = useState({
+        loading: {
+            boolean: false,
+            text: '',
+            title: ''
+        },
+        errors: null,
+        isDialogOpen: false
     });
 
-    const citiesDropdown = (provincesId) => {
-        const citiesToShow = new Array();
-        cities.forEach(city => {
-            if (city.provinceId === provincesId) {
-                citiesToShow.push(city);
-            }
+
+    const [countries, setCountries] = useState([]);
+    const [cities, setCities] = useState([]);
+    const [states, setStates] = useState([]);
+
+    const handleSubmit = () => {
+        setResponse({
+            ...response, isDialogOpen: true, loading: { boolean: true, text: 'Updating your profile...', title: 'Processing' }
         });
-        return citiesToShow;
-    }
-
-    const handleCloseSnackbar = (event, reason) => {
-        if(reason === 'clickaway'){
-            return
-        }
-        setResponseValues({...responseValues, success: false, failed: false});
-    }
-
-    const handleSubmit = (event) => {
-        setResponseValues({...responseValues, loading: true});
-        event.preventDefault();
         const feedback = {
-			name: formData.name,
-			message: formData.message,
-			phone: formData.phone,
-            company: formData.company,
-            email: formData.email
+			fullName: formData.fullName,
+			phoneNumber: formData.phoneNumber,
+			dateOfBirth: formData.dateOfBirth,
+            cityId: formData.city.id,
+            addressLine1: formData.addressLine1,
+            addressLine2: formData.addressLine2
 		};
-        Axios.post(`${AppConstants.apiEndpoint}/feedback`, feedback)
-        .then(res => {
-            if (res.status === 200) {
-                setResponseValues({...responseValues, success: true, loading: false});
-            } else {
-                setResponseValues({...responseValues, failed: true, loading: false});
+        Axios.post(`${AppConstants.apiEndpoint}/users/update`, feedback, {
+            headers: {
+                'Authorization': localStorage.getItem('AuthToken')
             }
         })
-        .catch(err => {
-            setResponseValues({...responseValues, failed: true, loading: false});
-            console.log(err);
+        .then(res => {
+            if (res.status === 200) {
+                setResponse({
+                    ...response, isDialogOpen: true, loading: { boolean: false, text: 'Successfully updated profile data', title: 'Success' }
+                });
+            } else {
+                setResponse({
+                    ...response, isDialogOpen: true, loading: { boolean: false, text: 'Failed to update profile data', title: 'Failure' }
+                });
+            }
+        })
+        .catch(error => {
+            if (error.response) {
+                console.log(error.response);
+                if (error.response.status == 403) {
+                    handleLogout(history);
+                } else if (error.response.status == 404) {
+                    setResponse({
+                        ...response, isDialogOpen: true, loading: { boolean: false, text: 'Ooops. We could not find the page you are looking for.', title: 'Page Not Found' }
+                    });
+                } else {
+                    setResponse({
+                        ...response, isDialogOpen: true, loading: { boolean: false, text: error.response.data.message, title: 'Processing' }
+                    });
+                }
+            } else {
+                setResponse({
+                    ...response, isDialogOpen: true, loading: { boolean: true, text: 'Failed to communicate with the server. Ensure you have a stable internet connection.', title: 'Failure' }
+                });
+            }
         });
     };
 
     useEffect(() => {
+        setResponse({
+            ...response, isDialogOpen: true, loading: { boolean: true, text: 'Loading user data', title: 'Processing' }
+        });
         Axios.get(`${AppConstants.apiEndpoint}/user`, {
             headers: {
                 'Authorization': localStorage.getItem('AuthToken')
             }
         })
         .then(res => {
-            console.log(localStorage.getItem('AuthToken'));
-            setFormData({
-                ...formData,
-                fullName: res.data.userCredentials.fullName,
-                phoneNumber: res.data.userCredentials.phoneNumber,
-                email: res.data.userCredentials.email,
-                dateOfBirth: res.data.userCredentials.dateOfBirth,
-                addressLine1: res.data.userCredentials.addressLine1,
-                addressLine2: res.data.userCredentials.addressLine2,
-                profilePhoto: res.data.userCredentials.imageUrl
-            });
+            if (res.status == 200) {
+                setFormData({
+                    ...formData,
+                    fullName: res.data.userCredentials.fullName,
+                    phoneNumber: res.data.userCredentials.phoneNumber,
+                    email: res.data.userCredentials.email,
+                    dateOfBirth: res.data.userCredentials.dateOfBirth,
+                    addressLine1: res.data.userCredentials.addressLine1,
+                    addressLine2: res.data.userCredentials.addressLine2,
+                    profilePhoto: res.data.userCredentials.imageUrl
+                });
+                Axios.get(`${AppConstants.apiEndpoint}/countries`)
+                .then(res => {
+                    if (res.status == 200) {
+                        setCountries(res.data);
+                        Axios.get(`${AppConstants.apiEndpoint}/states`)
+                        .then(res => {
+                            if (res.status == 200) {
+                                setStates(res.data);
+                                Axios.get(`${AppConstants.apiEndpoint}/cities`)
+                                .then(res => {
+                                    if (res.status == 200) {
+                                        setCities(res.data);
+                                        setResponse({
+                                            ...response, isDialogOpen: false, loading: { boolean: false, text: 'Successfully Loaded user data', title: 'Success' }
+                                        });
+                                    } else {
+                                        setResponse({
+                                            ...response, isDialogOpen: true, loading: { boolean: false, text: 'Failed to load user data. Refresh this page to try again.', title: 'Error' }
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    if (error.response) {
+                                        if (error.response.status == 403) {
+                                            handleLogout(history);
+                                        } else if (error.response.status == 404) {
+                                            setResponse({
+                                                ...response, isDialogOpen: true, loading: { boolean: false, text: 'Ooops. We could not find the page you are looking for.', title: 'Page Not Found' }
+                                            });
+                                        } else {
+                                            setResponse({
+                                                ...response, isDialogOpen: true, loading: { boolean: false, text: error.response.data.message, title: 'Processing' }
+                                            });
+                                        }
+                                    } else {
+                                        setResponse({
+                                            ...response, isDialogOpen: true, loading: { boolean: true, text: 'Failed to communicate with the server. Ensure you have a stable internet connection.', title: 'Failure' }
+                                        });
+                                    }
+                                });
+                            } else {
+                                setResponse({
+                                    ...response, isDialogOpen: true, loading: { boolean: false, text: 'Failed to load user data. Refresh this page to try again.', title: 'Error' }
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            if (error.response) {
+                                if (error.response.status == 403) {
+                                    handleLogout(history);
+                                } else if (error.response.status == 404) {
+                                    setResponse({
+                                        ...response, isDialogOpen: true, loading: { boolean: false, text: 'Ooops. We could not find the page you are looking for.', title: 'Page Not Found' }
+                                    });
+                                } else {
+                                    setResponse({
+                                        ...response, isDialogOpen: true, loading: { boolean: false, text: error.response.data.message, title: 'Error' }
+                                    });
+                                }
+                            } else {
+                                setResponse({
+                                    ...response, isDialogOpen: true, loading: { boolean: true, text: 'Failed to communicate with the server. Ensure you have a stable internet connection.', title: 'Failure' }
+                                });
+                            }
+                        })
+                    } else {
+                        setResponse({
+                            ...response, isDialogOpen: true, loading: { boolean: false, text: 'Failed to load user data. Refresh this page to try again.', title: 'Error' }
+                        });
+                    }
+                })
+                .catch(error => {
+                    if (error.response) {
+                        if (error.response.status == 403) {
+                            handleLogout(history);
+                        } else if (error.response.status == 404) {
+                            setResponse({
+                                ...response, isDialogOpen: true, loading: { boolean: false, text: 'Ooops. We could not find the page you are looking for.', title: 'Page Not Found' }
+                            });
+                        } else {
+                            setResponse({
+                                ...response, isDialogOpen: true, loading: { boolean: false, text: error.response.data.message, title: 'Processing' }
+                            });
+                        }
+                    } else {
+                        setResponse({
+                            ...response, isDialogOpen: true, loading: { boolean: true, text: 'Failed to communicate with the server. Ensure you have a stable internet connection.', title: 'Failure' }
+                        });
+                    }
+                });
+            } else {
+                setResponse({
+                    ...response, isDialogOpen: true, loading: { boolean: true, text: 'Failed to load user data. Refresh this page to try again.', title: 'Processing' }
+                });
+            }
         })
-        .catch(err => {
-            console.log(err);
-        })
+        .catch(error => {
+            if (error.response) {
+                if (error.response.status == 403) {
+                    handleLogout(history);
+                } else if (error.response.status == 404) {
+                    setResponse({
+                        ...response, isDialogOpen: true, loading: { boolean: false, text: 'Ooops. We could not find the page you are looking for.', title: 'Page Not Found' }
+                    });
+                } else {
+                    setResponse({
+                        ...response, isDialogOpen: true, loading: { boolean: false, text: error.response.data.message, title: 'Processing' }
+                    });
+                }
+            } else {
+                setResponse({
+                    ...response, isDialogOpen: true, loading: { boolean: true, text: 'Failed to communicate with the server. Ensure you have a stable internet connection.', title: 'Failure' }
+                });
+            }
+        });
     }, [])
     return (
         <div>
             <React.Fragment>
-                <Snackbar open={responseValues.success} onClose={handleCloseSnackbar} autoHideDuration={6000}>
-                    <Alert severity="success" onClose={handleCloseSnackbar}>Success</Alert>
-                </Snackbar>
-                <Snackbar open={responseValues.failed} onClose={handleCloseSnackbar} autoHideDuration={6000}>
-                    <Alert severity="error" onClose={handleCloseSnackbar}>Failed</Alert>
-                </Snackbar>
+                <CustomDialog isOpen={response.isDialogOpen} onClose={() => setResponse({
+                    ...response, isDialogOpen: false
+                })} title={response.loading.title} content={response.loading.text} />
             </React.Fragment>
             <MainNav />
             <div style={{marginLeft: 20, marginRight: 20}}>
@@ -152,7 +251,7 @@ const ProfilePage = () => {
                         <Typography variant="h5" className={classes.subTitle}>MY ACCOUNT</Typography>
                         <Divider />
                         <br />
-                        {responseValues.loading ? <LinearProgress /> : <div></div>}
+                        {response.loading.boolean ? <LinearProgress /> : <div></div>}
                         <form>
                             <Grid container spacing={3}>
                                 <Grid item sm={12} md={12}>
@@ -172,6 +271,7 @@ const ProfilePage = () => {
                                 value={formData.email}
                                 name="email"
                                 size="small"
+                                disabled
                                 type="text"
                                 onChange={e => setFormData({...formData, email: e.target.value})}
                                 variant="outlined"
@@ -227,7 +327,7 @@ const ProfilePage = () => {
                             <br />
                             <Autocomplete
                                 options={countries}
-                                getOptionLabel={option => option.title}
+                                getOptionLabel={option => option.name}
                                 fullWidth
                                 size="small"
                                 onChange={(e, value) => setFormData({...formData, country: value})}
@@ -236,22 +336,20 @@ const ProfilePage = () => {
                             <br />
                             <br />
                             <Autocomplete
-                                options={provinces}
-                                getOptionLabel={option => option.title}
+                                options={states}
+                                getOptionLabel={option => option.name}
                                 fullWidth
                                 size="small"
-                                onChange={(e, value) => setFormData({...formData, province: value}, setResponseValues({...responseValues, citiesDisabled: false}))}
+                                onChange={(e, value) => setFormData({...formData, province: value})}
                                 renderInput={params => <TextField {...params} label="Province" variant="outlined" />}
                             />
                             <br />
                             <br />
                             <Autocomplete
-                                options={formData.province ? citiesDropdown(formData.province.id) : cities}
-                                disabled={responseValues.citiesDisabled}
-                                getOptionLabel={option => option.title}
+                                options={cities}
+                                getOptionLabel={option => option.name}
                                 fullWidth
                                 size="small"
-                                value={formData}
                                 onChange={(e, value) => setFormData({...formData, city: value})}
                                 renderInput={params => <TextField {...params} label="City" variant="outlined" />}
                             />
@@ -260,8 +358,8 @@ const ProfilePage = () => {
                             <input type="file" onChange={e => setFormData({...formData, profilePhoto: e.target.files[0]})} />
                                     <br />
                                     <br />
-                                    <Button variant="contained" color="primary" disabled={responseValues.loading} onClick={handleSubmit}>Submit</Button>{'      '}
-                                    <Button variant="contained" color="primary" disabled={responseValues.loading}>Reset</Button>
+                                    <Button variant="contained" color="primary" disabled={response.loading.boolean} onClick={handleSubmit}>Submit</Button>{'      '}
+                                    <Button variant="contained" color="primary" disabled={response.loading.boolean}>Reset</Button>
                                 </Grid>
                             </Grid>
                         </form>
