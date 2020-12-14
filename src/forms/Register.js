@@ -9,6 +9,7 @@ import Axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import CustomDialog from '../components/CustomDialog';
 import cuffs from '../images/investigation.jpg';
+import { handleLogout } from '../utils/auth';
 
 const useStyles = makeStyles(() => ({
     subTitle: {
@@ -19,6 +20,7 @@ const useStyles = makeStyles(() => ({
 
 const Register = () => {
     const classes = useStyles();
+    const history = useHistory();
     const [countries, setCountries] = useState([]);
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
@@ -67,16 +69,15 @@ const Register = () => {
 			fullName: formData.fullName,
 			dateOfBirth: formData.dateOfBirth,
 			phoneNumber: formData.phoneNumber,
-			country: formData.country,
-			province: formData.province,
 			email: formData.email,
 			password: formData.password,
             confirmPassword: formData.confirmPassword,
             addressLine1: formData.addressLine1,
             addressLine2: formData.addressLine2,
-            city: formData.city.id,
+            city: formData.city,
             userType: 'resident'
-		};
+        };
+        console.log(JSON.stringify(newUserData));
         Axios.post(`${AppConstants.apiEndpoint}/users/register`, newUserData)
         .then(res => {
             if (res.status == 201) {
@@ -113,17 +114,47 @@ const Register = () => {
                 }
             })
             .catch(error => {
-                console.log(error);
-                setResponse({
-                    ...response, isDialogOpen: true, errors: error, loading: { boolean: false, text: `Error: ${error}`}
-                });
+                if(error.response){
+                    if (error.response.status == 404) {
+                        setResponse({
+                            ...response, isDialogOpen: true, loading: { boolean: false, text: 'Page not found', title: 'Not found' }
+                        });
+                    } else {
+                        setResponse({
+                            ...response, isDialogOpen: true, errors: error.response.data.message, loading: { boolean: false, text: error.response.data.message}
+                        });
+                    }
+                }else if (error.request) {
+                    setResponse({
+                        ...response, isDialogOpen: true, errors: 'Failed to communicate with the server', loading: { boolean: false, text: `Failed to communicate with the server`}
+                    });
+                } else {
+                    setResponse({
+                        ...response, isDialogOpen: true, errors: 'An unknown error occured', loading: { boolean: false, text: `An unknown error occured`}
+                    });
+                }
             })
         })
-        .catch(err => {
-            console.log(err);
-            setResponse({
-                ...response, isDialogOpen: true, loading: { boolean: false, text: `Error: ${err}`}
-            })
+        .catch(error => {
+            if (error.response) {
+                if (error.response.status == 404) {
+                    setResponse({
+                        ...response, isDialogOpen: true, loading: { boolean: false, text: 'Page not found', title: 'Not found' }
+                    });
+                } else {
+                    setResponse({
+                        ...response, isDialogOpen: true, loading: { boolean: false, text: error.response.data.message, title: 'Error' }
+                    });
+                }
+            } else if (error.request) {
+                setResponse({
+                    ...response, isDialogOpen: true, loading: {boolean: false, text: 'Failed to communicate with the server. Ensure you have a stable internet connection', title: 'Error'}
+                });
+            } else {
+                setResponse({
+                    ...response, isDialogOpen: true, loading: {boolean: false, text: error, title: 'Unknown Error'}
+                });
+            }
         });
     };
 

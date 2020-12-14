@@ -63,7 +63,7 @@ const {
   getCrimeCategories
 } = require('./apis/crimeCategories');
 
-app.post('/police-stations', auth, addPoliceStation);
+app.post('/police-stations', addPoliceStation);
 app.get('/police-stations', auth, getAllPoliceStations);
 
 app.get('/user', auth, getUserDetails);

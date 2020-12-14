@@ -56,7 +56,6 @@ const AddPoliceStation = () => {
             addressLine2: formData.addressLine2,
             city: formData.city
         };
-        
         Axios.post(`${AppConstants.apiEndpoint}/police-stations`, newStation, {
             headers: {
                 'Authorization': localStorage.getItem('AuthToken')
@@ -83,6 +82,7 @@ const AddPoliceStation = () => {
                         ...response, isDialogOpen: true, loading: { boolean: false, text: 'Page not found', title: 'Not found' }
                     });
                 } else {
+                    console.log(err.response);
                     setResponse({
                         ...response, isDialogOpen: true, loading: { boolean: false, text: err.response.body.message, title: 'Error' }
                     });

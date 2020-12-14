@@ -27,7 +27,6 @@ exports.loginUser = (request, response) => {
         return response.status(200).json({ token });
     })
     .catch((error) => {
-        console.error(error);
         return response.status(403).json({ message: 'Incorrect credentials. Please try again!' });
     });
 };
@@ -40,7 +39,7 @@ exports.signUpUser = (request, response) => {
         dateOfBirth: request.body.dateOfBirth,
         addressLine1: request.body.addressLine1,
         addressLine2: request.body.addressLine2,
-        cityId: request.body.cityId,
+        city: request.body.city,
         password: request.body.password,
         confirmPassword: request.body.confirmPassword,
         userType: request.body.userType
@@ -76,7 +75,7 @@ exports.signUpUser = (request, response) => {
         const userCredentials = {
             fullName: newUser.fullName,
             dateOfBirth: newUser.dateOfBirth,
-            cityId: newUser.cityId,
+            city: newUser.city,
             email: newUser.email,
             phoneNumber: newUser.phoneNumber,
             addressLine1: newUser.addressLine1,

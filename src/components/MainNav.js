@@ -123,8 +123,9 @@ const MainNav = () => {
                                     anchorEl={dropdownMenu.anchorEl}
                                     id="reports-dropdown-menu"
                                     onRequestClose={handleCloseMennu}
+                                    PaperProps={{onMouseLeave: handleCloseMennu}}
                                 >
-                                    <MenuItem>ALL POLICE STATIONS</MenuItem>
+                                    <MenuItem onClick={(e) => history.push('/resident/police-stations')}>ALL POLICE STATIONS</MenuItem>
                                     <MenuItem>ALL POLICE REPORT</MenuItem>
                                     <MenuItem>ALL MEMBERS REPORT</MenuItem>
                                     <MenuItem>ALL CATEGORY REPORT</MenuItem>
@@ -184,8 +185,12 @@ const MainNav = () => {
                                         aria-owns={dropdownMenu.open ? 'reports-dropdown-menu' : null}
                                         onMouseOver={handleShowMenu}
                                     />
-                                    <Menu open={dropdownMenu.open} anchorEl={dropdownMenu.anchorEl} id="reports-dropdown-menu">
-                                        <MenuItem>ALL POLICE STATIONS</MenuItem>
+                                    <Menu
+                                        open={dropdownMenu.open} anchorEl={dropdownMenu.anchorEl}
+                                        id="reports-dropdown-menu"
+                                        PaperProps={{onMouseLeave: handleCloseMennu}}
+                                    >
+                                        <MenuItem onClick={(e) => history.push('/resident/police-stations')}>ALL POLICE STATIONS</MenuItem>
                                         <MenuItem>ALL POLICE REPORT</MenuItem>
                                         <MenuItem>ALL MEMBERS REPORT</MenuItem>
                                         <MenuItem>ALL CATEGORY REPORT</MenuItem>
