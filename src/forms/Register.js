@@ -1,4 +1,5 @@
-import { Grid, TextField, Divider, Typography, makeStyles, Container, Button, LinearProgress } from '@material-ui/core';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Grid, TextField, Divider, Typography, makeStyles, Button, LinearProgress } from '@material-ui/core';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import React, { useEffect, useState } from 'react';
 import MainNav from '../components/MainNav';
@@ -9,7 +10,7 @@ import Axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import CustomDialog from '../components/CustomDialog';
 import cuffs from '../images/investigation.jpg';
-import { handleLogout } from '../utils/auth';
+//import { handleLogout } from '../utils/auth';
 
 const useStyles = makeStyles(() => ({
     subTitle: {
@@ -49,7 +50,7 @@ const Register = () => {
         isDialogOpen: false
     });
 
-    const citiesDropdown = (provincesId) => {
+   /* const citiesDropdown = (provincesId) => {
         const citiesToShow = new Array();
         cities.forEach(city => {
             if (city.provinceId === provincesId) {
@@ -57,7 +58,7 @@ const Register = () => {
             }
         });
         return citiesToShow;
-    }
+    }*/
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -75,29 +76,33 @@ const Register = () => {
             addressLine1: formData.addressLine1,
             addressLine2: formData.addressLine2,
             city: formData.city,
-            userType: 'resident'
+            userType: 'admin'
         };
         console.log(JSON.stringify(newUserData));
         Axios.post(`${AppConstants.apiEndpoint}/users/register`, newUserData)
         .then(res => {
-            if (res.status == 201) {
+            if (res.status === 201) {
                 setResponse({
                     ...response, isDialogOpen: true, loading: { boolean: true, text: 'Successfully saved user information.'}
                 });
+                
             }
             else{
                 setResponse({
                     ...response, isDialogOpen: true, loading: { boolean: true, text: 'Failed to save user information.'}
                 });
             }
-            setResponse({
+            //
+              setResponse({
                 ...response, isDialogOpen: true, loading: { boolean: true, text: 'Uploading profile picture.'}
             })
             localStorage.setItem("AuthToken", `Bearer ${res.data.token}`);
             let form_data = new FormData();
             form_data.append('image', formData.profilePhoto);
             form_data.append('content', formData.content);
-            Axios.post(`${AppConstants.apiEndpoint}/users/profile-picture`, form_data, {
+              ///formData.profilePhoto || history.push('/login')
+            //Do this if there is a profile picture
+           Axios.post(`${AppConstants.apiEndpoint}/users/profile-picture`, form_data, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${res.data.token}`
@@ -105,8 +110,9 @@ const Register = () => {
             }).then(res => {
                 if (res.status === 200) {
                     setResponse({
-                        ...response, isDialogOpen: true, loading: { boolean: false, text: 'Successfully uploaded profile picture.'}
-                    })
+                        ...response, isDialogOpen: true, loading: { boolean: false, text: 'Successfully uploaded profile picture.' }
+                    });
+                   
                 } else {
                     setResponse({
                         ...response, isDialogOpen: true, loading: { boolean: true, text: 'Failed to upload profile picture.'}
@@ -115,13 +121,9 @@ const Register = () => {
             })
             .catch(error => {
                 if(error.response){
-                    if (error.response.status == 404) {
+                    if (error.response.status === 404) {
                         setResponse({
                             ...response, isDialogOpen: true, loading: { boolean: false, text: 'Page not found', title: 'Not found' }
-                        });
-                    } else {
-                        setResponse({
-                            ...response, isDialogOpen: true, errors: error.response.data.message, loading: { boolean: false, text: error.response.data.message}
                         });
                     }
                 }else if (error.request) {
@@ -137,7 +139,7 @@ const Register = () => {
         })
         .catch(error => {
             if (error.response) {
-                if (error.response.status == 404) {
+                if (error.response.status === 404) {
                     setResponse({
                         ...response, isDialogOpen: true, loading: { boolean: false, text: 'Page not found', title: 'Not found' }
                     });
@@ -156,7 +158,9 @@ const Register = () => {
                 });
             }
         });
+        // history.push('/login')
     };
+
 
     useEffect(() => {
         setResponse({...response, loading: {
@@ -344,7 +348,7 @@ const Register = () => {
                         </form>
                     </Grid>
                     <Grid item lg={5}>
-                        <img src={cuffs} style={{width: 500, height: 500, paddingTop: 45}} />
+                        <img src={cuffs} style={{width: 500, height: 500, paddingTop: 45}} alt=""/>
                     </Grid>
                 </Grid>
             </div>

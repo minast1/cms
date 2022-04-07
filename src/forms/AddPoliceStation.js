@@ -1,4 +1,5 @@
-import { Grid, TextField, Divider, Typography, makeStyles, Button, LinearProgress, TextareaAutosize } from '@material-ui/core';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Grid, TextField, Divider, Typography, makeStyles, Button, LinearProgress } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import MainNav from '../components/MainNav';
 import { AppConstants } from '../constants/AppConstants';
@@ -62,7 +63,7 @@ const AddPoliceStation = () => {
             }
         })
         .then(res => {
-            if (res.status == 200) {
+            if (res.status === 200) {
                 setResponse({
                     ...response, isDialogOpen: true, loading: { boolean: false, text: 'Successfully added police station.', title: 'Success' }
                 });
@@ -75,9 +76,9 @@ const AddPoliceStation = () => {
         })
         .catch(err => {
             if (err.response) {
-                if (err.response.status == 403 ) {
+                if (err.response.status === 403 ) {
                     handleLogout(history);
-                } else if (err.response.status == 404) {
+                } else if (err.response.status === 404) {
                     setResponse({
                         ...response, isDialogOpen: true, loading: { boolean: false, text: 'Page not found', title: 'Not found' }
                     });
@@ -136,7 +137,7 @@ const AddPoliceStation = () => {
             })
         }).catch(error => {
             if (error.response) {
-                if (error.response.status == 403) {
+                if (error.response.status === 403) {
                     handleLogout(history);
                 } else {
                     setResponse({
@@ -255,7 +256,7 @@ const AddPoliceStation = () => {
                         </form>
                     </Grid>
                     <Grid item lg={5}>
-                        <img src={cuffs} style={{width: 500, height: 500, paddingTop: 45}} />
+                        <img src={cuffs} style={{width: 500, height: 500, paddingTop: 45}} alt=""/>
                     </Grid>
                 </Grid>
             </div>

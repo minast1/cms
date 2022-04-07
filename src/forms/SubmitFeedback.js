@@ -142,7 +142,7 @@ const SubmitFeedback = () => {
                     <Typography variant="h5" className={classes.subTitle}>WHERE TO FIND US</Typography>
                     <Divider />
                     <br />
-                    <div className="content" dangerouslySetInnerHTML={{__html: '<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d2441.9170720651186!2d28.329515628064797!3d-15.392896166097863!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2szm!4v1605049486076!5m2!1sen!2szm" width="500" height="400" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>'}}></div>
+                    <div className="content" dangerouslySetInnerHTML={{__html: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3970.3629524911203!2d-0.1680644857560083!3d5.660534334164422!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdf9c9435692819%3A0xe90ce65988c21ad6!2sUniversity%20of%20Professional%20Studies%2C%20Accra%20(UPSA)!5e0!3m2!1sen!2sgh!4v1648682346603!5m2!1sen!2sgh" width="700" height="400" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>'}}></div>
                     <br />
                 </Grid>
                 </Grid>

@@ -1,4 +1,4 @@
-import { Grid, TextField, Divider, Typography, makeStyles, Button, LinearProgress } from '@material-ui/core';
+import { Grid, Divider, Typography, makeStyles, Button, LinearProgress } from '@material-ui/core';
 import Axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
 const ChangePassword = () => {
     const classes = useStyles();
     const history = useHistory();
+    // eslint-disable-next-line no-unused-vars
     const [login, setLogin] = useState({
         confirmPassword: null,
         password: null,
@@ -38,7 +39,7 @@ const ChangePassword = () => {
             }
         }).then(res => {
             console.log(res);
-            if (res.status == 200) {
+            if (res.status === 200) {
                 setEmailSent({
                     boolean: true, text: 'An email with instructions has been sent to your email address.'
                 });
@@ -89,7 +90,7 @@ const ChangePassword = () => {
                     </div>
                 </Grid>
                 <Grid item lg={5}>
-                    <img src={cuffs} style={{width: 500, height: 500, paddingTop: 42}} />
+                    <img src={cuffs} style={{width: 500, height: 500, paddingTop: 42}} alt="" />
                     <br />
                     <br />
                 </Grid>

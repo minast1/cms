@@ -1,4 +1,5 @@
-import { Grid, TextField, Divider, Typography, makeStyles, Container, Button, LinearProgress } from '@material-ui/core';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Grid, TextField, Divider, Typography, makeStyles, Button, LinearProgress } from '@material-ui/core';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import React, { useEffect, useState } from 'react';
 import MainNav from '../components/MainNav';
@@ -21,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 const CriminalRegistration = () => {
     const classes = useStyles();
     const history = useHistory();
-    const [countries, setCountries] = useState([]);
+    const [countries, setCountries] = useState(['Ghana', 'Nigeria', 'Togo']);
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
     const [formData, setFormData] = useState({
@@ -47,7 +48,7 @@ const CriminalRegistration = () => {
         isDialogOpen: false
     });
 
-    const citiesDropdown = (provincesId) => {
+    /*const citiesDropdown = (provincesId) => {
         const citiesToShow = new Array();
         cities.forEach(city => {
             if (city.provinceId === provincesId) {
@@ -55,7 +56,7 @@ const CriminalRegistration = () => {
             }
         });
         return citiesToShow;
-    }
+    }*/
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -82,7 +83,7 @@ const CriminalRegistration = () => {
             }
         })
         .then(res => {
-            if (res.status == 201) {
+            if (res.status === 201) {
                 setResponse({
                     ...response, isDialogOpen: true, loading: { boolean: true, text: 'Successfully saved user information.'}
                 });
@@ -319,7 +320,7 @@ const CriminalRegistration = () => {
                         </form>
                     </Grid>
                     <Grid item lg={5}>
-                        <img src={cuffs} style={{width: 500, height: 500, paddingTop: 45}} />
+                        <img src={cuffs} style={{width: 500, height: 500, paddingTop: 45}} alt=""/>
                     </Grid>
                 </Grid>
             </div>

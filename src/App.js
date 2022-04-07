@@ -31,7 +31,7 @@ function App() {
           <Route exact path="/" component={Home} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/register" component={Register} />
-          <Route exact path="/about-project" component={AboutProject} />
+         
           <Route exact path="/users/dashboard" component={Dashboard} />
           <Route exact path="/log-complaint" component={SubmitComplaint} />
           <Route exact path="/me/complaints" component={Complaints} />
@@ -40,7 +40,7 @@ function App() {
           <Route exact path="/police/police-stations/add" component={AddPoliceStation} />
           <Route exact path="/feedback" component={SubmitFeedback} />
           <Route exact path="/criminals" component={Criminals} />
-          <Route exact path="police/criminals/registration" component={CriminalRegistration} />
+          <Route exact path="/police/criminals/registration" component={CriminalRegistration} />
           <Route exact path="/admin/police-officers/registration" component={RegisterPolice} />
           <Route exact path="/admin/court-types/add" component={AddCourtType} />
           <Route exact path="/police/article-books/add" component={AddArticleBook} />

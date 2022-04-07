@@ -1,4 +1,4 @@
-import { Divider, Typography, makeStyles, LinearProgress, Grid, Paper } from '@material-ui/core';
+import { Divider, Typography, makeStyles, LinearProgress, Grid, Paper, Box } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import MainNav from '../components/MainNav';
 import { AppConstants } from '../constants/AppConstants';
@@ -19,9 +19,31 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
+const Crimes = ["Use of Firearm in commission of an Offence",
+    "Unauthorized Possession of a Firearm",
+    "Child Pornography", "Child Luring", "Sexual Assult", "Sexual Assult Causing Bodily Harm",
+    "Sexual Assult With a Weapon", "Administering of Noxious Substance", "Criminal Harassment", "Homicide", "Multiple Homicide",
+    "Attempted Murder", "Larseny", "Grand Larseny", "Escape from Lawful Custody", "Perjury", "Fabricating Evidence",
+    "Fraud", "Obstructing Justice", "Intimidation of a Justice System Participant", "Contempt of Court",
+    "Dangerouse Operation of a Motor Vehicle", "Kidnapping and Unlawful Confinement", "Trafficking in Persons",
+    "Assult Peace Officer", "Aggrevated Assult", "Theft", "Forceble Entry", "Identity Theft", "Forgery"]
+
+const getCrimes = (arr, num = 1) => {
+   const res = [];
+   for(let i = 0; i < num; ){
+      const random = Math.floor(Math.random() * arr.length);
+      if(res.indexOf(arr[random]) !== -1){
+         continue;
+      };
+      res.push(arr[random]);
+      i++;
+   };
+   return res;
+};
 const CriminalDetails = () => {
     const classes = useStyles();
     const [criminal, setCriminal] = useState();
+    const [crimes, setCrimes] = useState([]);
     const [responseValues, setResponseValues] = useState({
         loading: false
     });
@@ -42,6 +64,8 @@ const CriminalDetails = () => {
 
     useEffect(() => {
         getCriminal(localStorage.getItem('CriminalId'));
+        
+        setCrimes(getCrimes(Crimes, 4));
     }, []);
 
     return (
@@ -140,11 +164,23 @@ const CriminalDetails = () => {
                                                         <Typography>{moment(criminal?.dateOfBirth).format('LL')}</Typography>
                                                     </Paper>
                                                 </Grid>
-                                            </Grid>
-                                        </Paper>
+                                    </Grid>
+                                </Paper>
+                                <Paper>
+                                    <Box style={{paddingTop: 5, paddingBottom:5,  display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        CRIMES
+                                    </Box>
+                                    {
+                                        crimes?.map((item, index) => (
+                                                  <Paper className={classes.innerPaper} key={index} style={{marginBottom : 4}}>
+                                                <Typography className={classes.descriptionText}>{`${index + 1} . ${item}`}</Typography>
+                                                    </Paper>
+                                        ))
+                                    }
+                                  
+                                </Paper>
                                     </Grid>
                                     <Grid item lg={4}>
-                                        <Typography variant="h5" className={classes.subTitle}>CRIMINAL {criminal?.fullName.toUpperCase()}</Typography>
                                         <Divider />
                                         <br />
                                         <img src={criminal?.imageUrl} style={{width:488, height: 360}}/>

@@ -31,7 +31,7 @@ const Login = () => {
         })
         .then(res => {
             console.log(res);
-            if (res.status == 200) {
+            if (res.status === 200) {
                 const token = res.data.token;
                 Axios.get(`${AppConstants.apiEndpoint}/user`, {
                     headers: {
@@ -49,7 +49,7 @@ const Login = () => {
                     console.log(error);
                 })
             }
-            if (res.status == 403) {
+            if (res.status === 403) {
                 console.log("Falid");
             }
         })
@@ -115,7 +115,7 @@ const Login = () => {
                     </div>
                 </Grid>
                 <Grid item lg={5}>
-                    <img src={cuffs} style={{width: 500, height: 500, paddingTop: 42}} />
+                    <img src={cuffs} style={{width: 500, height: 500, paddingTop: 42}} alt="" />
                     <br />
                     <br />
                 </Grid>

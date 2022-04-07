@@ -1,8 +1,9 @@
-import { Grid, TextField, Divider, Typography, makeStyles, Button, LinearProgress, Snackbar } from '@material-ui/core';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Grid, TextField, Divider, Typography, makeStyles, Button, LinearProgress } from '@material-ui/core';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import React, { useEffect, useState } from 'react';
 import MainNav from '../components/MainNav';
-import { Alert } from '@material-ui/lab';
+//import { Alert } from '@material-ui/lab';
 import { AppConstants } from '../constants/AppConstants';
 import Axios from 'axios';
 import DateMoment from '@date-io/moment';
@@ -81,9 +82,9 @@ const ProfilePage = () => {
         .catch(error => {
             if (error.response) {
                 console.log(error.response);
-                if (error.response.status == 403) {
+                if (error.response.status === 403) {
                     handleLogout(history);
-                } else if (error.response.status == 404) {
+                } else if (error.response.status === 404) {
                     setResponse({
                         ...response, isDialogOpen: true, loading: { boolean: false, text: 'Ooops. We could not find the page you are looking for.', title: 'Page Not Found' }
                     });
@@ -110,7 +111,7 @@ const ProfilePage = () => {
             }
         })
         .then(res => {
-            if (res.status == 200) {
+            if (res.status === 200) {
                 setFormData({
                     ...formData,
                     fullName: res.data.userCredentials.fullName,
@@ -123,15 +124,15 @@ const ProfilePage = () => {
                 });
                 Axios.get(`${AppConstants.apiEndpoint}/countries`)
                 .then(res => {
-                    if (res.status == 200) {
+                    if (res.status === 200) {
                         setCountries(res.data);
                         Axios.get(`${AppConstants.apiEndpoint}/states`)
                         .then(res => {
-                            if (res.status == 200) {
+                            if (res.status === 200) {
                                 setStates(res.data);
                                 Axios.get(`${AppConstants.apiEndpoint}/cities`)
                                 .then(res => {
-                                    if (res.status == 200) {
+                                    if (res.status === 200) {
                                         setCities(res.data);
                                         setResponse({
                                             ...response, isDialogOpen: false, loading: { boolean: false, text: 'Successfully Loaded user data', title: 'Success' }
@@ -144,9 +145,9 @@ const ProfilePage = () => {
                                 })
                                 .catch(error => {
                                     if (error.response) {
-                                        if (error.response.status == 403) {
+                                        if (error.response.status === 403) {
                                             handleLogout(history);
-                                        } else if (error.response.status == 404) {
+                                        } else if (error.response.status === 404) {
                                             setResponse({
                                                 ...response, isDialogOpen: true, loading: { boolean: false, text: 'Ooops. We could not find the page you are looking for.', title: 'Page Not Found' }
                                             });
@@ -169,9 +170,9 @@ const ProfilePage = () => {
                         })
                         .catch(error => {
                             if (error.response) {
-                                if (error.response.status == 403) {
+                                if (error.response.status === 403) {
                                     handleLogout(history);
-                                } else if (error.response.status == 404) {
+                                } else if (error.response.status === 404) {
                                     setResponse({
                                         ...response, isDialogOpen: true, loading: { boolean: false, text: 'Ooops. We could not find the page you are looking for.', title: 'Page Not Found' }
                                     });
@@ -194,9 +195,9 @@ const ProfilePage = () => {
                 })
                 .catch(error => {
                     if (error.response) {
-                        if (error.response.status == 403) {
+                        if (error.response.status === 403) {
                             handleLogout(history);
-                        } else if (error.response.status == 404) {
+                        } else if (error.response.status === 404) {
                             setResponse({
                                 ...response, isDialogOpen: true, loading: { boolean: false, text: 'Ooops. We could not find the page you are looking for.', title: 'Page Not Found' }
                             });
@@ -219,9 +220,9 @@ const ProfilePage = () => {
         })
         .catch(error => {
             if (error.response) {
-                if (error.response.status == 403) {
+                if (error.response.status === 403) {
                     handleLogout(history);
-                } else if (error.response.status == 404) {
+                } else if (error.response.status === 404) {
                     setResponse({
                         ...response, isDialogOpen: true, loading: { boolean: false, text: 'Ooops. We could not find the page you are looking for.', title: 'Page Not Found' }
                     });
@@ -368,7 +369,7 @@ const ProfilePage = () => {
                     <Typography variant="h5" className={classes.subTitle}>PROFILE PICTURE</Typography>
                     <Divider />
                     <br />
-                    <img src={`${formData.profilePhoto}`} style={{width: 550, height: 700}} />
+                    <img src={`${formData.profilePhoto}`} style={{width: 550, height: 700}} alt=""/>
                     <br />
                 </Grid>
                 </Grid>

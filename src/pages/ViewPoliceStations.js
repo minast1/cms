@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Divider, Typography, makeStyles, Container, LinearProgress, Link } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import MainNav from '../components/MainNav';
@@ -136,9 +137,9 @@ const ViewPoliceStations = () => {
         })
         .catch(error => {
             if (error.response) {
-                if (error.response.status == 403 ) {
+                if (error.response.status === 403 ) {
                     handleLogout(history);
-                } else if (error.response.status == 404) {
+                } else if (error.response.status === 404) {
                     setResponse({
                         ...response, isDialogOpen: true, loading: { boolean: false, text: 'Page not found', title: 'Not found' }
                     });

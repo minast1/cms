@@ -185,7 +185,7 @@ const Dashboard = () => {
                         {authenticatedButtons(localStorage.getItem('UserType'))}
                     </Grid>
                     <Grid item lg={5}>
-                        <img src={cuffs} style={{width: 500, height: 500, paddingTop: 42}} />
+                        <img src={cuffs} style={{width: 500, height: 500, paddingTop: 42}} alt="" />
                     </Grid>
                 </Grid>
             </div>

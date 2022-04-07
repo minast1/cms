@@ -25,8 +25,9 @@ const AboutProject = () => {
                         <Divider />
                         <br />
                         <Typography>
-                            Online Crime Reporting System is an internet based Project developed using PHP and MySQL. The aim of Online Crime Reporting 
-                            System will be to create a web based program using which people are able to report crime online. It gives the facility of
+                            Criminal Management System is an internet based Project developed using PHP and MySQL.
+                            The aim of Criminal Management 
+                            System will be to create a web based program  where people are able to report crime online. It gives the facility of
                             uploading videos or images of crime scenes to ensure that authorities can take action immediately.
                             The Objective of online crime reporting system is to develop a web based program using which people can report crime online.
                             It provides the facility of uploading images or videos of crime scenes to ensure that police may take action immediately.
@@ -34,7 +35,7 @@ const AboutProject = () => {
                         </Typography>
                     </Grid>
                     <Grid item lg={5}>
-                        <img src={cuffs} style={{width: 500, height: 500, paddingTop: 45}} />
+                        <img src={cuffs} style={{width: 500, height: 500, paddingTop: 45}} alt=""/>
                     </Grid>
                 </Grid>
                 <br />

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Divider, Typography, makeStyles, Container, LinearProgress, Snackbar } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import MainNav from '../components/MainNav';

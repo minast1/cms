@@ -134,7 +134,7 @@ const Criminals = () => {
                                                     <Button variant="contained" color="primary" style={{marginRight: 0, float: 'right'}} onClick={(e) => showCriminal(criminal.id)}>View Details</Button>
                                                 </Grid>
                                                 <Grid item xs={6}>
-                                                    <Button variant="contained" color="primary">View Crimes</Button>
+                                                    <Button variant="contained" color="primary" onClick={(e) => showCriminal(criminal.id)}>View Crimes</Button>
                                                 </Grid>
                                             </Grid>
                                         </Paper>
